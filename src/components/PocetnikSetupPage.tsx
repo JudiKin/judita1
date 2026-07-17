@@ -49,7 +49,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 ? 'Spočítej objekty a vyber správný počet.'
                 : setup.primaryEnvironment === 'moreLess'
                   ? 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'
-                  : 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'}
+                  : setup.primaryEnvironment === 'pay'
+                    ? 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'
+                    : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -180,6 +182,31 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 <option value="1,2,5">1 Kč, 2 Kč a 5 Kč</option>
                 <option value="1,2,5,10">1 Kč, 2 Kč, 5 Kč a 10 Kč</option>
               </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'fill' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Doplň do (počet)
+              <input
+                type="number"
+                min={2}
+                max={10}
+                value={setup.primaryFillTarget}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFillTarget: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Nejméně kuliček na začátku
+              <input
+                type="number"
+                min={0}
+                max={9}
+                value={setup.primaryFillMinStart}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFillMinStart: Number(event.target.value) }))}
+              />
             </label>
           </div>
         ) : null}

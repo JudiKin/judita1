@@ -5,6 +5,7 @@ import { PatternPractice } from './components/PatternPractice';
 import { CountingPractice } from './components/CountingPractice';
 import { MoreLessPractice } from './components/MoreLessPractice';
 import { PayPractice } from './components/PayPractice';
+import { FillPractice } from './components/FillPractice';
 
 type Screen = 'setup' | 'practice';
 
@@ -21,6 +22,9 @@ export default function App() {
     }
     if (setup.primaryEnvironment === 'pay') {
       return <PayPractice setup={setup} onBack={() => setScreen('setup')} />;
+    }
+    if (setup.primaryEnvironment === 'fill') {
+      return <FillPractice setup={setup} onBack={() => setScreen('setup')} />;
     }
     return <PatternPractice setup={setup} onBack={() => setScreen('setup')} />;
   }

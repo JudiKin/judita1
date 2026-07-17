@@ -1,6 +1,8 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill';
+
+export type FillMarbleColor = 'red' | 'orange';
 
 export type SequencePatternKind = 'AB' | 'AAB' | 'AAAB' | 'ABC' | 'AABB' | 'ABAC';
 
@@ -37,6 +39,8 @@ export interface PocetnikSetup {
   primaryPayMaxPrice: number;
   primaryPayCoins: PayCoinValue[];
   primaryPayItems: PayItemKind[];
+  primaryFillTarget: number;
+  primaryFillMinStart: number;
   maxQuestions: number;
 }
 
@@ -61,6 +65,8 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryPayMaxPrice: 8,
   primaryPayCoins: [1, 2, 5],
   primaryPayItems: ['apple', 'ball', 'book', 'pencil', 'bread', 'toy'],
+  primaryFillTarget: 7,
+  primaryFillMinStart: 0,
   maxQuestions: 10,
 };
 
@@ -69,6 +75,7 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   counting: 'Počítej',
   moreLess: 'Porovnej počet',
   pay: 'Zaplať',
+  fill: 'Doplň',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
@@ -76,4 +83,5 @@ export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   counting: 'Počítej',
   moreLess: 'Porovnej počet',
   pay: 'Zaplať',
+  fill: 'Doplň',
 };

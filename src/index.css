@@ -426,3 +426,49 @@ body {
   transform: translateY(4px);
   box-shadow: 0 4px 0 #1d4ed8;
 }
+
+.pocetnik-marble-bag {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: default;
+}
+
+.pocetnik-marble-bag--clickable {
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.pocetnik-marble-bag--clickable:hover {
+  transform: translateY(-2px);
+}
+
+.pocetnik-add-marble {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 2px solid rgb(91 75 138 / 0.15);
+  border-radius: 999px;
+  padding: 12px 24px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgb(91 75 138 / 0.12);
+  cursor: pointer;
+  font-weight: 900;
+  color: #5b4b8a;
+}
+
+.pocetnik-add-marble:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pocetnik-add-marble__dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.pocetnik-add-marble__label {
+  font-size: 1.2rem;
+}
