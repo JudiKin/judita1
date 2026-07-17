@@ -64,17 +64,28 @@ export function normalizeObjectCount(count: number): number {
   return Math.max(1, Math.floor(count));
 }
 
-function buildOptions(correct: number, min: number, max: number): number[] {
+function buildOptions(correct: number, min: number, max: number, random: () => number): number[] {
   const safeCorrect = normalizeObjectCount(correct);
+  const targetSize = Math.min(6, max - min + 1);
   const values = new Set<number>([safeCorrect]);
-  for (let offset = 1; values.size < Math.min(6, max - min + 1) && offset <= 6; offset += 1) {
+
+  for (let offset = 1; values.size < targetSize && offset <= max - min; offset += 1) {
     if (safeCorrect - offset >= min) values.add(safeCorrect - offset);
     if (safeCorrect + offset <= max) values.add(safeCorrect + offset);
   }
-  for (let candidate = min; values.size < Math.min(6, max - min + 1) && candidate <= max; candidate += 1) {
+
+  for (let candidate = min; values.size < targetSize && candidate <= max; candidate += 1) {
     values.add(candidate);
   }
-  return Array.from(values).sort((a, b) => a - b);
+
+  const options = Array.from(values);
+  shuffleInPlace(options, random);
+  return options;
+}
+
+export function resolveCountingAnswerMode(max: number, requested: CountingAnswerMode): CountingAnswerMode {
+  if (max > 6) return 'numbers';
+  return requested;
 }
 
 function pickRandomCount(min: number, max: number, random: () => number): number {
@@ -109,14 +120,15 @@ export function buildCountingSession(setup: PocetnikSetup, count: number, seed: 
   return counts.map((value, index) => {
     const objectKind = objectKindsPicked[index];
     const safeCount = normalizeObjectCount(value);
+    const answerMode = resolveCountingAnswerMode(max, answerModesPicked[index]);
 
     return {
       index,
       count: safeCount,
       objectKind,
       stickerUrl: objectKind === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
-      answerMode: answerModesPicked[index],
-      options: buildOptions(safeCount, min, max),
+      answerMode,
+      options: buildOptions(safeCount, min, max, random),
     };
   });
 }

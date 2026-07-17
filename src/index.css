@@ -314,6 +314,48 @@ body {
   gap: 8px;
 }
 
+.pocetnik-object-group--compact {
+  gap: 4px;
+  padding: 16px;
+}
+
+.pocetnik-object-group--compact > * {
+  transform: scale(0.72);
+}
+
+.pocetnik-object-group--dense {
+  gap: 2px;
+  padding: 12px;
+  min-height: 220px;
+}
+
+.pocetnik-object-group--dense > * {
+  transform: scale(0.52);
+}
+
+.pocetnik-marks-answer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 160px;
+  min-height: 96px;
+  align-items: center;
+}
+
+.pocetnik-marks-answer__group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pocetnik-marks-answer__mark {
+  width: 8px;
+  height: 44px;
+  border-radius: 999px;
+  background: #6c48f5;
+}
+
 .pocetnik-delta-option {
   min-height: 120px;
   padding: 16px;

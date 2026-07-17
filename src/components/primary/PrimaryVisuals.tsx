@@ -126,9 +126,11 @@ export function ObjectGroup({
   stickerUrl?: string;
 }) {
   const safeCount = Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 1;
+  const densityClass =
+    safeCount > 12 ? 'pocetnik-object-group--dense' : safeCount > 8 ? 'pocetnik-object-group--compact' : '';
 
   return (
-    <div className="pocetnik-object-group" aria-label={`Skupina ${safeCount} objektů`}>
+    <div className={`pocetnik-object-group ${densityClass}`.trim()} aria-label={`Skupina ${safeCount} objektů`}>
       {Array.from({ length: safeCount }, (_, index) => (
         <CompareObject key={index} kind={objectKind} index={index} stickerUrl={stickerUrl} />
       ))}
@@ -173,6 +175,31 @@ export function DotsAnswer({ value }: { value: number }) {
           }}
         />
       ))}
+    </div>
+  );
+}
+
+export function MarksAnswer({ value }: { value: number }) {
+  const safeValue = Math.max(1, Math.min(20, Math.floor(value)));
+  const fullGroups = Math.floor(safeValue / 5);
+  const remainder = safeValue % 5;
+
+  return (
+    <div className="pocetnik-marks-answer" aria-hidden="true">
+      {Array.from({ length: fullGroups }, (_, groupIndex) => (
+        <div key={`group-${groupIndex}`} className="pocetnik-marks-answer__group">
+          {Array.from({ length: 5 }, (_, markIndex) => (
+            <span key={markIndex} className="pocetnik-marks-answer__mark" />
+          ))}
+        </div>
+      ))}
+      {remainder > 0 ? (
+        <div className="pocetnik-marks-answer__group">
+          {Array.from({ length: remainder }, (_, markIndex) => (
+            <span key={markIndex} className="pocetnik-marks-answer__mark" />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

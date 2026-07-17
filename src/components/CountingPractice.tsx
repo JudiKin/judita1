@@ -13,7 +13,7 @@ import {
   PrimaryShell,
   PRIMARY_BACKGROUNDS,
 } from './primary/PrimaryShell';
-import { DotsAnswer, NumberAnswer, ObjectGroup } from './primary/PrimaryVisuals';
+import { DotsAnswer, MarksAnswer, NumberAnswer, ObjectGroup } from './primary/PrimaryVisuals';
 
 interface CountingPracticeProps {
   setup: PocetnikSetup;
@@ -59,7 +59,13 @@ export function CountingPractice({ setup, onBack }: CountingPracticeProps) {
               style={{ minHeight: 140, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b' }}>{String.fromCharCode(65 + optionIndex)}</span>
-              {example.answerMode === 'numbers' ? <NumberAnswer value={value} /> : <DotsAnswer value={Math.max(1, Math.min(6, value))} />}
+              {example.answerMode === 'numbers' ? (
+                <NumberAnswer value={value} />
+              ) : example.answerMode === 'marks' ? (
+                <MarksAnswer value={value} />
+              ) : (
+                <DotsAnswer value={Math.max(1, Math.min(6, value))} />
+              )}
             </button>
           ))}
         </PracticeOptions>

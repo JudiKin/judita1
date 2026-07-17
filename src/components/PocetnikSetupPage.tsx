@@ -121,6 +121,11 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 }}
               />
             </label>
+            {setup.primaryCountingMax > 6 ? (
+              <p style={{ margin: 0, gridColumn: '1 / -1', color: '#92400e', fontWeight: 700, lineHeight: 1.5 }}>
+                Při maximu nad 6 se odpovědi zobrazují jako čísla (tečky jdou jen do 6).
+              </p>
+            ) : null}
           </div>
         ) : null}
 
