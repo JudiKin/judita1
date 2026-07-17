@@ -4,7 +4,7 @@ const ITEM_COLORS: Record<PayItemKind, { main: string; accent: string }> = {
   apple: { main: '#ef4444', accent: '#22c55e' },
   ball: { main: '#3b82f6', accent: '#fbbf24' },
   book: { main: '#8b5cf6', accent: '#f59e0b' },
-  pencil: { main: '#f59e0b', accent: '#ef4444' },
+  pencil: { main: '#f4c430', accent: '#f472b6' },
   bread: { main: '#d97706', accent: '#fcd34d' },
   toy: { main: '#ec4899', accent: '#06b6d4' },
 };
@@ -47,11 +47,18 @@ export function ShopItem({
           </>
         ) : null}
         {kind === 'pencil' ? (
-          <>
-            <rect x="48" y="72" width="84" height="18" rx="8" fill={colors.main} transform="rotate(-18 90 81)" />
-            <polygon points="48,81 34,72 34,90" fill={colors.accent} transform="rotate(-18 90 81)" />
-            <rect x="118" y="66" width="16" height="30" rx="4" fill="#fde68a" transform="rotate(-18 90 81)" />
-          </>
+          <g transform="translate(80 82) rotate(-38)">
+            <rect x="-72" y="-11" width="20" height="22" rx="5" fill={colors.accent} />
+            <rect x="-52" y="-12" width="16" height="24" rx="2" fill="#94a3b8" />
+            <line x1="-50" y1="-7" x2="-38" y2="-7" stroke="#64748b" strokeWidth="1.5" />
+            <line x1="-50" y1="-1" x2="-38" y2="-1" stroke="#64748b" strokeWidth="1.5" />
+            <line x1="-50" y1="5" x2="-38" y2="5" stroke="#64748b" strokeWidth="1.5" />
+            <rect x="-36" y="-12" width="88" height="24" rx="4" fill={colors.main} />
+            <rect x="-36" y="4" width="88" height="8" rx="2" fill="#d97706" opacity="0.35" />
+            <rect x="52" y="-10" width="16" height="20" rx="2" fill="#deb887" />
+            <polygon points="68,-10 84,0 68,10" fill="#c4a574" />
+            <polygon points="74,-5 84,0 74,5" fill="#1f2937" />
+          </g>
         ) : null}
         {kind === 'bread' ? (
           <>
