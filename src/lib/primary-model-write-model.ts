@@ -84,7 +84,7 @@ function buildSplitOptions(
     addOption(first, total - first);
   }
 
-  for (let offset = 1; options.size < 4; offset += 1) {
+  for (let offset = 1; options.size < 4 && offset <= total; offset += 1) {
     addOption(Math.max(0, correctFirst - offset), total - Math.max(0, correctFirst - offset));
     addOption(Math.min(total, correctFirst + offset), total - Math.min(total, correctFirst + offset));
   }
@@ -96,7 +96,7 @@ function buildSplitOptions(
 
   const result: ModelWriteSplit[] = [{ first: correctFirst, second: correctSecond }, ...list.slice(0, 3)];
   shuffleInPlace(result, random);
-  return result;
+  return result.slice(0, Math.min(4, result.length));
 }
 
 function buildAddExample(index: number, random: () => number): ModelWriteExample | null {
