@@ -23,10 +23,20 @@ const PIP_COORDS: Record<string, string> = {
   'bottom-right': 'right: 18%; bottom: 18%;',
 };
 
-function DominoHalf({ dots }: { dots: number }) {
+function DominoHalf({ dots, filledValue }: { dots: number | null; filledValue?: number | null }) {
+  const displayDots = dots ?? filledValue ?? null;
+
+  if (displayDots === null) {
+    return (
+      <div className="pocetnik-domino__half">
+        <span className="pocetnik-domino__blank" />
+      </div>
+    );
+  }
+
   return (
     <div className="pocetnik-domino__half">
-      {(PIP_LAYOUTS[dots] ?? PIP_LAYOUTS[0]).map((key) => (
+      {(PIP_LAYOUTS[displayDots] ?? PIP_LAYOUTS[0]).map((key) => (
         <span
           key={key}
           className="pocetnik-domino__pip"
@@ -45,12 +55,22 @@ function DominoHalf({ dots }: { dots: number }) {
   );
 }
 
-export function DominoTile({ leftDots, rightDots }: { leftDots: number; rightDots: number }) {
+export function DominoTile({
+  leftDots,
+  rightDots,
+  filledLeft,
+  filledRight,
+}: {
+  leftDots: number | null;
+  rightDots: number | null;
+  filledLeft?: number | null;
+  filledRight?: number | null;
+}) {
   return (
     <div className="pocetnik-domino" aria-hidden="true">
-      <DominoHalf dots={leftDots} />
+      <DominoHalf dots={leftDots} filledValue={filledLeft} />
       <div className="pocetnik-domino__divider" />
-      <DominoHalf dots={rightDots} />
+      <DominoHalf dots={rightDots} filledValue={filledRight} />
     </div>
   );
 }
@@ -62,13 +82,13 @@ export function DominoEquation({
   resultValue,
   activeField,
 }: {
-  mode: 'add' | 'subtract';
+  mode: 'add' | 'subtract' | 'fillAdd';
   leftValue: number | null;
   rightValue: number | null;
   resultValue: number | null;
   activeField: 'left' | 'right' | 'result' | null;
 }) {
-  const operator = mode === 'add' ? '+' : '−';
+  const operator = mode === 'subtract' ? '−' : '+';
 
   return (
     <div className="pocetnik-domino-equation">
@@ -81,9 +101,19 @@ export function DominoEquation({
           {rightValue ?? ''}
         </span>
       </div>
-      <span className={`pocetnik-domino-equation__result ${activeField === 'result' ? 'is-active' : ''} ${resultValue !== null ? 'is-filled' : ''}`}>
-        {resultValue ?? ''}
-      </span>
+      {mode !== 'fillAdd' ? (
+        <span className={`pocetnik-domino-equation__result ${activeField === 'result' ? 'is-active' : ''} ${resultValue !== null ? 'is-filled' : ''}`}>
+          {resultValue ?? ''}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+export function DominoTargetSum({ value }: { value: number }) {
+  return (
+    <div className="pocetnik-domino-target">
+      <span className="pocetnik-domino-target__value">{value}</span>
     </div>
   );
 }

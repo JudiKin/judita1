@@ -73,7 +73,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                         : setup.primaryEnvironment === 'numberSequence'
                           ? 'Doplň chybějící číslo v číselné řadě, např. 0, 2, 4, ?, 8, 10.'
                           : setup.primaryEnvironment === 'dominoWrite'
-                            ? 'Spočítej tečky na domino, zapiš sčítání nebo odčítání a výsledek.'
+                            ? 'Spočítej tečky na domino, zapiš sčítání nebo odčítání, nebo doplň chybějící stranu podle součtu.'
                             : setup.primaryEnvironment === 'sumSearch'
                               ? 'Najdi sousední čísla v řadě nebo sloupci, která dohromady dají zadaný součet.'
                               : 'Doplň kuličky do pytlíku na zvolený počet.'}
@@ -457,6 +457,22 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                   }}
                 />
                 Odčítání
+              </label>
+              <label className={`pocetnik-setup__mode-option ${dominoWriteModes.includes('fillAdd') ? 'is-active' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={dominoWriteModes.includes('fillAdd')}
+                  onChange={(event) => {
+                    setSetup((current) => {
+                      const currentModes = current.primaryDominoWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryDominoWriteModes;
+                      const next = event.target.checked
+                        ? [...new Set([...currentModes, 'fillAdd' as DominoWriteMode])]
+                        : currentModes.filter((mode) => mode !== 'fillAdd');
+                      return { ...current, primaryDominoWriteModes: next.length > 0 ? next : ['fillAdd'] };
+                    });
+                  }}
+                />
+                Doplň a zapiš
               </label>
             </div>
             <label className="pocetnik-setup__field">

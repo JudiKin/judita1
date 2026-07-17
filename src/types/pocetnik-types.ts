@@ -2,7 +2,9 @@ export type SchoolStage = 'primary' | 'lower-secondary';
 
 export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite' | 'numberSequence' | 'dominoWrite' | 'sumSearch';
 
-export type DominoWriteMode = 'add' | 'subtract';
+export type DominoWriteMode = 'add' | 'subtract' | 'fillAdd';
+
+export type DominoFillMissingSide = 'left' | 'right' | 'both';
 
 export type NumberSequenceStep = 1 | 2 | 5 | 10;
 
@@ -128,7 +130,7 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryNumberSequenceSteps: [1, 2, 5, 10],
   primaryNumberSequenceLength: 6,
   primaryNumberSequenceMax: 20,
-  primaryDominoWriteModes: ['add', 'subtract'],
+  primaryDominoWriteModes: ['add', 'subtract', 'fillAdd'],
   primaryDominoMaxDots: 9,
   primarySumSearchTargets: [5, 6, 7, 8, 9, 10],
   primarySumSearchGridSize: 4,
