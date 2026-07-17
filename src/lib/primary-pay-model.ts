@@ -1,4 +1,5 @@
 import type { PocetnikSetup, PayCoinValue, PayItemKind } from '../types/pocetnik-types';
+import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface PayExample {
   index: number;
@@ -23,21 +24,28 @@ function clampPriceRange(setup: PocetnikSetup): { min: number; max: number } {
   return { min, max };
 }
 
-export function buildPayExample(setup: PocetnikSetup, index: number): PayExample {
+export function buildPaySession(setup: PocetnikSetup, count: number, seed: number): PayExample[] {
   const { min, max } = clampPriceRange(setup);
   const span = max - min + 1;
-  const price = min + (index % span);
   const itemKinds = setup.primaryPayItems.length > 0 ? setup.primaryPayItems : ['apple', 'ball', 'book'];
-  const itemKind = itemKinds[index % itemKinds.length] as PayItemKind;
   const coinValues = (setup.primaryPayCoins.length > 0 ? setup.primaryPayCoins : [1, 2, 5]) as PayCoinValue[];
+  const random = createRng(seed);
 
-  return {
-    index,
-    itemKind,
-    itemLabel: PAY_ITEM_LABELS[itemKind],
-    price,
-    coinValues,
-  };
+  const prices = Array.from({ length: count }, () => min + Math.floor(random() * span));
+  const items = Array.from({ length: count }, () => itemKinds[Math.floor(random() * itemKinds.length)] as PayItemKind);
+  shuffleInPlace(prices, random);
+  shuffleInPlace(items, random);
+
+  return prices.map((price, index) => {
+    const itemKind = items[index];
+    return {
+      index,
+      itemKind,
+      itemLabel: PAY_ITEM_LABELS[itemKind],
+      price,
+      coinValues,
+    };
+  });
 }
 
 export function sumCoins(selected: PayCoinValue[]): number {

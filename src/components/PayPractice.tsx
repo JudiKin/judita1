@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { PayCoinValue, PocetnikSetup } from '../types/pocetnik-types';
-import { buildPayExample, sumCoins } from '../lib/primary-pay-model';
+import { buildPaySession, sumCoins } from '../lib/primary-pay-model';
+import { usePracticeDeck } from '../hooks/usePracticeDeck';
 import { FeedbackOverlay, PracticeHeader, PrimaryCard, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
 import { CoinButton, PriceTag, SelectedCoin, ShopItem } from './primary/PayVisuals';
 
@@ -10,13 +11,12 @@ interface PayPracticeProps {
 }
 
 export function PayPractice({ setup, onBack }: PayPracticeProps) {
-  const [index, setIndex] = useState(0);
+  const { example, index, goNext } = usePracticeDeck(setup, buildPaySession);
   const [selectedCoins, setSelectedCoins] = useState<PayCoinValue[]>([]);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
 
-  const example = useMemo(() => buildPayExample(setup, index), [setup, index]);
   const currentSum = sumCoins(selectedCoins);
 
   const addCoin = (value: PayCoinValue) => {
@@ -48,7 +48,7 @@ export function PayPractice({ setup, onBack }: PayPracticeProps) {
   };
 
   const handleNext = () => {
-    setIndex((current) => current + 1);
+    goNext();
     setSelectedCoins([]);
     setCompleted(false);
     setFeedback(null);

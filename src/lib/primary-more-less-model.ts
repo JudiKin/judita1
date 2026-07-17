@@ -1,5 +1,6 @@
 import type { CountingObjectType, PocetnikSetup } from '../types/pocetnik-types';
 import { COUNTING_OBJECT_LABELS } from './primary-counting-model';
+import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface MoreLessExample {
   index: number;
@@ -44,25 +45,44 @@ function buildDeltaOptions(correct: number, maxDelta: number): number[] {
   return options;
 }
 
-export function buildMoreLessExample(setup: PocetnikSetup, index: number): MoreLessExample {
+export function buildMoreLessSession(setup: PocetnikSetup, count: number, seed: number): MoreLessExample[] {
   const { min, max, maxDelta } = clampRange(setup);
   const objectTypes = setup.primaryMoreLessObjectTypes.length > 0 ? setup.primaryMoreLessObjectTypes : ['coconuts'];
-  const objectType = objectTypes[index % objectTypes.length] as CountingObjectType;
+  const deltas = Array.from({ length: maxDelta * 2 + 1 }, (_, index) => index - maxDelta);
+  const random = createRng(seed);
 
-  const leftCount = min + ((index * 2) % (max - min + 1));
-  const deltas = [-maxDelta, -1, 0, 1, maxDelta].filter((delta) => delta >= -maxDelta && delta <= maxDelta);
-  const delta = deltas[index % deltas.length] ?? 0;
-  const rightCount = Math.max(min, Math.min(max, leftCount + delta));
+  const leftCounts = Array.from({ length: count }, () => min + Math.floor(random() * (max - min + 1)));
+  const deltaChoices = Array.from({ length: count }, () => deltas[Math.floor(random() * deltas.length)]);
+  const objectTypesPicked = Array.from(
+    { length: count },
+    () => objectTypes[Math.floor(random() * objectTypes.length)] as CountingObjectType,
+  );
+  const stickerIndices = Array.from({ length: count }, () => Math.floor(random() * STICKER_URLS.length));
 
-  return {
-    index,
-    leftCount,
-    rightCount,
-    delta: rightCount - leftCount,
-    objectType,
-    stickerUrl: objectType === 'stickers' ? STICKER_URLS[index % STICKER_URLS.length] : undefined,
-    options: buildDeltaOptions(rightCount - leftCount, maxDelta),
-  };
+  shuffleInPlace(leftCounts, random);
+  shuffleInPlace(deltaChoices, random);
+  shuffleInPlace(objectTypesPicked, random);
+  shuffleInPlace(stickerIndices, random);
+
+  return leftCounts.map((leftCount, index) => {
+    const objectType = objectTypesPicked[index];
+    const rightCount = Math.max(min, Math.min(max, leftCount + deltaChoices[index]));
+    const delta = rightCount - leftCount;
+
+    return {
+      index,
+      leftCount,
+      rightCount,
+      delta,
+      objectType,
+      stickerUrl: objectType === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
+      options: buildDeltaOptions(delta, maxDelta),
+    };
+  });
+}
+
+export function buildMoreLessExample(setup: PocetnikSetup, index: number): MoreLessExample {
+  return buildMoreLessSession(setup, index + 1, 918273)[index];
 }
 
 export { COUNTING_OBJECT_LABELS as MORE_LESS_OBJECT_LABELS };

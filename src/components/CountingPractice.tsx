@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { PocetnikSetup } from '../types/pocetnik-types';
-import { buildCountingExample } from '../lib/primary-counting-model';
+import { buildCountingSession } from '../lib/primary-counting-model';
+import { usePracticeDeck } from '../hooks/usePracticeDeck';
 import { FeedbackOverlay, PracticeHeader, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
 import { DotsAnswer, NumberAnswer, ObjectGroup } from './primary/PrimaryVisuals';
 
@@ -10,11 +11,9 @@ interface CountingPracticeProps {
 }
 
 export function CountingPractice({ setup, onBack }: CountingPracticeProps) {
-  const [index, setIndex] = useState(0);
+  const { example, index, goNext } = usePracticeDeck(setup, buildCountingSession);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
-
-  const example = useMemo(() => buildCountingExample(setup, index), [setup, index]);
 
   const handlePick = (value: number) => {
     if (completed) return;
@@ -25,7 +24,7 @@ export function CountingPractice({ setup, onBack }: CountingPracticeProps) {
   };
 
   const handleNext = () => {
-    setIndex((current) => current + 1);
+    goNext();
     setCompleted(false);
     setFeedback(null);
   };

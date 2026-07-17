@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { PocetnikSetup } from '../types/pocetnik-types';
-import { buildMoreLessExample, formatDeltaLabel } from '../lib/primary-more-less-model';
+import { buildMoreLessSession, formatDeltaLabel } from '../lib/primary-more-less-model';
+import { usePracticeDeck } from '../hooks/usePracticeDeck';
 import { FeedbackOverlay, PracticeHeader, PrimaryCard, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
 import { ObjectGroup } from './primary/PrimaryVisuals';
 
@@ -10,11 +11,9 @@ interface MoreLessPracticeProps {
 }
 
 export function MoreLessPractice({ setup, onBack }: MoreLessPracticeProps) {
-  const [index, setIndex] = useState(0);
+  const { example, index, goNext } = usePracticeDeck(setup, buildMoreLessSession);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
-
-  const example = useMemo(() => buildMoreLessExample(setup, index), [setup, index]);
 
   const handlePick = (delta: number) => {
     if (completed) return;
@@ -25,7 +24,7 @@ export function MoreLessPractice({ setup, onBack }: MoreLessPracticeProps) {
   };
 
   const handleNext = () => {
-    setIndex((current) => current + 1);
+    goNext();
     setCompleted(false);
     setFeedback(null);
   };

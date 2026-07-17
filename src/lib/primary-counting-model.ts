@@ -1,4 +1,5 @@
 import type { CountingAnswerMode, CountingObjectType, PocetnikSetup } from '../types/pocetnik-types';
+import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface CountingExample {
   index: number;
@@ -34,23 +35,44 @@ function buildOptions(correct: number, min: number, max: number): number[] {
   return Array.from(values).sort((a, b) => a - b);
 }
 
-export function buildCountingExample(setup: PocetnikSetup, index: number): CountingExample {
+export function buildCountingSession(setup: PocetnikSetup, count: number, seed: number): CountingExample[] {
   const { min, max } = clampCountRange(setup);
   const span = max - min + 1;
-  const count = min + (index % span);
   const objectTypes = setup.primaryCountingObjectTypes.length > 0 ? setup.primaryCountingObjectTypes : ['coconuts'];
   const answerModes = setup.primaryCountingAnswerModes.length > 0 ? setup.primaryCountingAnswerModes : ['dots'];
-  const objectType = objectTypes[index % objectTypes.length] as CountingObjectType;
-  const answerMode = answerModes[Math.floor(index / Math.max(1, objectTypes.length)) % answerModes.length] as CountingAnswerMode;
+  const random = createRng(seed);
 
-  return {
-    index,
-    count,
-    objectType,
-    stickerUrl: objectType === 'stickers' ? STICKER_URLS[index % STICKER_URLS.length] : undefined,
-    answerMode,
-    options: buildOptions(count, min, max),
-  };
+  const counts = Array.from({ length: count }, () => min + Math.floor(random() * span));
+  const objectTypesPicked = Array.from(
+    { length: count },
+    () => objectTypes[Math.floor(random() * objectTypes.length)] as CountingObjectType,
+  );
+  const answerModesPicked = Array.from(
+    { length: count },
+    () => answerModes[Math.floor(random() * answerModes.length)] as CountingAnswerMode,
+  );
+  const stickerIndices = Array.from({ length: count }, () => Math.floor(random() * STICKER_URLS.length));
+
+  shuffleInPlace(counts, random);
+  shuffleInPlace(objectTypesPicked, random);
+  shuffleInPlace(answerModesPicked, random);
+  shuffleInPlace(stickerIndices, random);
+
+  return counts.map((value, index) => {
+    const objectType = objectTypesPicked[index];
+    return {
+      index,
+      count: value,
+      objectType,
+      stickerUrl: objectType === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
+      answerMode: answerModesPicked[index],
+      options: buildOptions(value, min, max),
+    };
+  });
+}
+
+export function buildCountingExample(setup: PocetnikSetup, index: number): CountingExample {
+  return buildCountingSession(setup, index + 1, 918273)[index];
 }
 
 export const COUNTING_ANSWER_MODE_LABELS: Record<CountingAnswerMode, string> = {

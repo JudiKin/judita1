@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { PocetnikSetup } from '../types/pocetnik-types';
-import { buildPatternExample, chunkPositions, symbolAt } from '../lib/primary-pattern-model';
+import { buildPatternSession, chunkPositions, symbolAt } from '../lib/primary-pattern-model';
+import { usePracticeDeck } from '../hooks/usePracticeDeck';
 import { FeedbackOverlay, PracticeHeader, PrimaryCard, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
 import { PatternSymbolView } from './primary/PrimaryVisuals';
 
@@ -10,11 +11,9 @@ interface PatternPracticeProps {
 }
 
 export function PatternPractice({ setup, onBack }: PatternPracticeProps) {
-  const [index, setIndex] = useState(0);
+  const { example, index, goNext } = usePracticeDeck(setup, buildPatternSession);
   const [answers, setAnswers] = useState<Array<{ id: string }>>([]);
   const [feedback, setFeedback] = useState<boolean | null>(null);
-
-  const example = useMemo(() => buildPatternExample(setup, index), [setup, index]);
   const totalCells = example.visibleCount + example.blankCount;
   const rows = chunkPositions(totalCells, example.rowCount);
   const currentBlankIndex = example.visibleCount + answers.length;
@@ -32,7 +31,7 @@ export function PatternPractice({ setup, onBack }: PatternPracticeProps) {
   };
 
   const handleNext = () => {
-    setIndex((current) => current + 1);
+    goNext();
     setAnswers([]);
     setFeedback(null);
   };
