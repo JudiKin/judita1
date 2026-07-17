@@ -896,6 +896,105 @@ body {
   padding-inline: 4px;
 }
 
+.pocetnik-domino-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 32px 24px;
+}
+
+.pocetnik-domino {
+  display: flex;
+  width: min(100%, 320px);
+  min-height: 120px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 28px rgb(154 52 18 / 0.12), inset 0 0 0 3px rgb(154 52 18 / 0.08);
+  overflow: hidden;
+}
+
+.pocetnik-domino__half {
+  position: relative;
+  flex: 1;
+  min-height: 120px;
+  background: rgb(255 255 255 / 0.96);
+}
+
+.pocetnik-domino__divider {
+  width: 4px;
+  background: rgb(154 52 18 / 0.15);
+}
+
+.pocetnik-domino__pip {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #111827;
+  box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.15);
+}
+
+.pocetnik-domino-equation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pocetnik-domino-equation__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pocetnik-domino-equation__box,
+.pocetnik-domino-equation__result {
+  min-width: 56px;
+  min-height: 56px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 14px;
+  border: 2px solid rgb(148 163 184 / 0.45);
+  background: #fff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #334155;
+}
+
+.pocetnik-domino-equation__result {
+  min-width: 72px;
+  min-height: 64px;
+  font-size: 2rem;
+}
+
+.pocetnik-domino-equation__box.is-active,
+.pocetnik-domino-equation__result.is-active {
+  border-color: rgb(234 88 12 / 0.55);
+  background: #fff7ed;
+  box-shadow: 0 0 0 3px rgb(234 88 12 / 0.12);
+}
+
+.pocetnik-domino-equation__box.is-filled,
+.pocetnik-domino-equation__result.is-filled {
+  border-color: rgb(4 120 87 / 0.35);
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.pocetnik-domino-equation__operator {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #6366f1;
+}
+
+.pocetnik-domino-option {
+  min-height: 72px;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #9a3412;
+}
+
 @media (max-width: 720px) {
   .pocetnik-ten-frame__cell {
     width: 28px;
