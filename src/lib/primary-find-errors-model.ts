@@ -79,7 +79,13 @@ function buildCountingExample(
   const objectKinds = setup.primaryFindErrorsObjectTypes.length > 0 ? setup.primaryFindErrorsObjectTypes : ['coconuts'];
   const objectKind = objectKinds[Math.floor(random() * objectKinds.length)] as MoreLessObjectKind;
   const actualCount = min + Math.floor(random() * (max - min + 1));
-  const displayedCount = hasError ? pickWrongValue(actualCount, min, max, random) : actualCount;
+  let displayedCount = actualCount;
+  if (hasError) {
+    displayedCount = pickWrongValue(actualCount, min, max, random);
+    if (displayedCount === actualCount) {
+      displayedCount = actualCount < max ? actualCount + 1 : actualCount - 1;
+    }
+  }
 
   return {
     index,
@@ -106,7 +112,13 @@ function buildComparisonExample(
   const actualDelta = Math.floor(random() * 7) - 3;
   const rightCount = Math.max(min, Math.min(max, leftCount + actualDelta));
   const delta = rightCount - leftCount;
-  const displayedDelta = hasError ? pickWrongDelta(delta, min, max, random) : delta;
+  let displayedDelta = delta;
+  if (hasError) {
+    displayedDelta = pickWrongDelta(delta, min, max, random);
+    if (displayedDelta === delta) {
+      displayedDelta = delta === 0 ? 1 : delta > 0 ? delta - 1 : delta + 1;
+    }
+  }
 
   return {
     index,
@@ -122,25 +134,42 @@ function buildComparisonExample(
 }
 
 function buildPatternExample(index: number, hasError: boolean, random: () => number): FindErrorsExample {
-  const patternType = PATTERN_TYPES[Math.floor(random() * PATTERN_TYPES.length)];
-  const unit = buildUnit(patternType, PATTERN_OBJECTS, Math.floor(random() * 1000));
-  const visibleCount = unit.length * 2 + 1;
-  const correctLast = symbolAtUnit(unit, visibleCount - 1);
-  const palette = Array.from(new Map(unit.map((symbol) => [symbol.id, symbol])).values());
-  const wrongChoices = palette.filter((symbol) => symbol.id !== correctLast.id);
-  const shownLast = hasError && wrongChoices.length > 0
-    ? wrongChoices[Math.floor(random() * wrongChoices.length)]
-    : correctLast;
-  const patternSymbols = Array.from({ length: visibleCount - 1 }, (_, position) => symbolAtUnit(unit, position));
-  patternSymbols.push(shownLast);
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    const patternType = PATTERN_TYPES[Math.floor(random() * PATTERN_TYPES.length)];
+    const unit = buildUnit(patternType, PATTERN_OBJECTS, Math.floor(random() * 1000));
+    const visibleCount = unit.length * 2 + 1;
+    const correctLast = symbolAtUnit(unit, visibleCount - 1);
+    const palette = Array.from(new Map(unit.map((symbol) => [symbol.id, symbol])).values());
+    const wrongChoices = palette.filter((symbol) => symbol.id !== correctLast.id);
 
-  return {
-    index,
-    kind: 'pattern',
-    hasError,
-    claimText: 'Vzor pokračuje správně.',
-    patternSymbols,
-  };
+    if (hasError && wrongChoices.length === 0) {
+      continue;
+    }
+
+    const shownLast = hasError
+      ? wrongChoices[Math.floor(random() * wrongChoices.length)]
+      : correctLast;
+    const patternSymbols = Array.from({ length: visibleCount - 1 }, (_, position) => symbolAtUnit(unit, position));
+    patternSymbols.push(shownLast);
+
+    return {
+      index,
+      kind: 'pattern',
+      hasError,
+      claimText: 'Vzor pokračuje správně.',
+      patternSymbols,
+    };
+  }
+
+  return buildPatternExample(index, false, random);
+}
+
+function buildBalancedErrorFlags(count: number, random: () => number): boolean[] {
+  const withError = Math.floor(count / 2);
+  const withoutError = count - withError;
+  const flags = [...Array.from({ length: withError }, () => true), ...Array.from({ length: withoutError }, () => false)];
+  shuffleInPlace(flags, random);
+  return flags;
 }
 
 export function buildFindErrorsSession(setup: PocetnikSetup, count: number, seed: number): FindErrorsExample[] {
@@ -148,7 +177,7 @@ export function buildFindErrorsSession(setup: PocetnikSetup, count: number, seed
   const random = createRng(seed);
 
   const pickedKinds = Array.from({ length: count }, () => kinds[Math.floor(random() * kinds.length)] as FindErrorKind);
-  const hasErrors = Array.from({ length: count }, () => random() < 0.5);
+  const hasErrors = buildBalancedErrorFlags(count, random);
 
   shuffleInPlace(pickedKinds, random);
   shuffleInPlace(hasErrors, random);
