@@ -2,7 +2,16 @@ import { useState } from 'react';
 import type { PocetnikSetup } from '../types/pocetnik-types';
 import { buildFillSession } from '../lib/primary-fill-model';
 import { usePracticeDeck } from '../hooks/usePracticeDeck';
-import { FeedbackOverlay, PracticeHeader, PrimaryCard, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
+import {
+  FeedbackOverlay,
+  PracticeHeader,
+  PracticeHint,
+  PracticeLayout,
+  PracticeTitle,
+  PrimaryCard,
+  PrimaryShell,
+  PRIMARY_BACKGROUNDS,
+} from './primary/PrimaryShell';
 import { AddMarbleButton, MarbleBag } from './primary/FillVisuals';
 
 interface FillPracticeProps {
@@ -43,13 +52,11 @@ export function FillPractice({ setup, onBack }: FillPracticeProps) {
   return (
     <PrimaryShell background={PRIMARY_BACKGROUNDS.softPurple}>
       {feedback !== null ? <FeedbackOverlay correct={feedback} /> : null}
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '20px 24px 32px' }}>
+      <PracticeLayout>
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
-        <div style={{ marginBottom: 24, fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, color: '#5b4b8a', textTransform: 'uppercase' }}>
-          Doplň do {example.target}
-        </div>
+        <PracticeTitle color="#5b4b8a">Doplň do {example.target}</PracticeTitle>
 
-        <PrimaryCard style={{ padding: '32px 24px', display: 'flex', justifyContent: 'center' }}>
+        <PrimaryCard className="pocetnik-practice-card pocetnik-practice-card--center">
           <MarbleBag
             count={currentCount}
             marbleColor={example.marbleColor}
@@ -58,31 +65,18 @@ export function FillPractice({ setup, onBack }: FillPracticeProps) {
           />
         </PrimaryCard>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 28 }}>
+        <div className="pocetnik-practice-actions">
           <AddMarbleButton marbleColor={example.marbleColor} onClick={handleAddMarble} disabled={!canAdd} />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-          {completed ? (
-            <div style={hintStyle('#047857')}>Správně. Pokračuj šipkou.</div>
-          ) : (
-            <div style={hintStyle('#64748b')}>
-              {remaining > 0 ? `Doplň ještě ${remaining} ${remaining === 1 ? 'kuličku' : remaining < 5 ? 'kuličky' : 'kuliček'}.` : 'Pytlík je plný.'}
-            </div>
-          )}
-        </div>
-      </div>
+        {completed ? (
+          <PracticeHint tone="success">Správně. Pokračuj šipkou.</PracticeHint>
+        ) : (
+          <PracticeHint tone="neutral">
+            {remaining > 0 ? `Doplň ještě ${remaining} ${remaining === 1 ? 'kuličku' : remaining < 5 ? 'kuličky' : 'kuliček'}.` : 'Pytlík je plný.'}
+          </PracticeHint>
+        )}
+      </PracticeLayout>
     </PrimaryShell>
   );
-}
-
-function hintStyle(color: string): React.CSSProperties {
-  return {
-    borderRadius: 999,
-    background: '#fff',
-    padding: '12px 20px',
-    fontWeight: 800,
-    color,
-    boxShadow: '0 8px 20px rgb(0 0 0 / 0.06)',
-  };
 }

@@ -2,7 +2,16 @@ import { useState } from 'react';
 import type { PayCoinValue, PocetnikSetup } from '../types/pocetnik-types';
 import { buildPaySession, sumCoins } from '../lib/primary-pay-model';
 import { usePracticeDeck } from '../hooks/usePracticeDeck';
-import { FeedbackOverlay, PracticeHeader, PrimaryCard, PrimaryShell, PRIMARY_BACKGROUNDS } from './primary/PrimaryShell';
+import {
+  FeedbackOverlay,
+  PracticeHeader,
+  PracticeHint,
+  PracticeLayout,
+  PracticeTitle,
+  PrimaryCard,
+  PrimaryShell,
+  PRIMARY_BACKGROUNDS,
+} from './primary/PrimaryShell';
 import { CoinButton, PriceTag, SelectedCoin, ShopItem } from './primary/PayVisuals';
 
 interface PayPracticeProps {
@@ -58,13 +67,11 @@ export function PayPractice({ setup, onBack }: PayPracticeProps) {
   return (
     <PrimaryShell background={PRIMARY_BACKGROUNDS.softBlue}>
       {feedback !== null ? <FeedbackOverlay correct={feedback} /> : null}
-      <div style={{ maxWidth: 960, margin: '0 auto', padding: '20px 24px 32px' }}>
+      <PracticeLayout>
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
-        <div style={{ marginBottom: 24, fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, color: '#1d4ed8', textTransform: 'uppercase' }}>
-          Zaplať
-        </div>
+        <PracticeTitle color="#1d4ed8">Zaplať</PracticeTitle>
 
-        <PrimaryCard style={{ padding: '28px 24px' }}>
+        <PrimaryCard className="pocetnik-practice-card pocetnik-practice-card--center">
           <div className="pocetnik-pay-shop">
             <div className="pocetnik-pay-shop__item-wrap">
               <ShopItem kind={example.itemKind} label={example.itemLabel} />
@@ -95,33 +102,20 @@ export function PayPractice({ setup, onBack }: PayPracticeProps) {
           ))}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+        <div className="pocetnik-practice-actions">
           <button type="button" className="pocetnik-pay-submit" onClick={handlePay} disabled={completed || selectedCoins.length === 0}>
             Zaplatit
           </button>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-          {completed ? (
-            <div style={hintStyle('#047857')}>Správně. Pokračuj šipkou.</div>
-          ) : hint ? (
-            <div style={hintStyle('#dc2626')}>{hint}</div>
-          ) : (
-            <div style={hintStyle('#64748b')}>Vyber mince a zaplať přesně podle cenovky.</div>
-          )}
-        </div>
-      </div>
+        {completed ? (
+          <PracticeHint tone="success">Správně. Pokračuj šipkou.</PracticeHint>
+        ) : hint ? (
+          <PracticeHint tone="error">{hint}</PracticeHint>
+        ) : (
+          <PracticeHint tone="neutral">Vyber mince a zaplať přesně podle cenovky.</PracticeHint>
+        )}
+      </PracticeLayout>
     </PrimaryShell>
   );
-}
-
-function hintStyle(color: string): React.CSSProperties {
-  return {
-    borderRadius: 999,
-    background: '#fff',
-    padding: '12px 20px',
-    fontWeight: 800,
-    color,
-    boxShadow: '0 8px 20px rgb(0 0 0 / 0.06)',
-  };
 }

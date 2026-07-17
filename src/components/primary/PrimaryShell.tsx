@@ -97,3 +97,33 @@ const badgeStyle: React.CSSProperties = {
   fontSize: '1.6rem',
   fontWeight: 900,
 };
+
+export function PracticeLayout({ children }: { children: ReactNode }) {
+  return <div className="pocetnik-practice-layout">{children}</div>;
+}
+
+export function PracticeTitle({ children, color }: { children: ReactNode; color: string }) {
+  return (
+    <h2 className="pocetnik-practice-title" style={{ color }}>
+      {children}
+    </h2>
+  );
+}
+
+export function PracticeHint({
+  children,
+  tone = 'neutral',
+}: {
+  children: ReactNode;
+  tone?: 'success' | 'error' | 'neutral';
+}) {
+  return (
+    <div className="pocetnik-practice-hint-wrap">
+      <div className={`pocetnik-practice-hint pocetnik-practice-hint--${tone}`}>{children}</div>
+    </div>
+  );
+}
+
+export function PracticeOptions({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <div className={`pocetnik-practice-options ${className}`.trim()}>{children}</div>;
+}
