@@ -1,5 +1,17 @@
+:root {
+  --pocetnik-font: "Quicksand", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html,
+body,
+#root {
+  font-family: var(--pocetnik-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .pocetnik-primary {
-  --p1-font: "Fenomen Sans", system-ui, sans-serif;
+  --p1-font: var(--pocetnik-font);
   --p1-text: #252525;
   --p1-card: #ffffff;
   --p1-green: #4caf50;
@@ -22,6 +34,11 @@
 body {
   margin: 0;
   background: #efe3cf;
+  font-family: var(--pocetnik-font);
+}
+
+.pocetnik-setup {
+  font-family: var(--pocetnik-font);
 }
 
 .pocetnik-primary-shell {
