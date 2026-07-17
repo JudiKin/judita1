@@ -113,6 +113,12 @@ body {
   justify-content: center;
 }
 
+.pocetnik-practice-card--fill {
+  padding: 32px 36px 28px;
+  min-height: 280px;
+  align-items: center;
+}
+
 .pocetnik-practice-actions {
   display: flex;
   justify-content: center;
@@ -516,8 +522,13 @@ body {
 .pocetnik-marble-bag {
   border: none;
   background: transparent;
-  padding: 0;
+  padding: 8px 12px;
   cursor: default;
+}
+
+.pocetnik-marble-bag__svg {
+  display: block;
+  overflow: visible;
 }
 
 .pocetnik-marble-bag--clickable {
@@ -532,14 +543,14 @@ body {
 .pocetnik-add-marble {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   border: 2px solid rgb(91 75 138 / 0.15);
   border-radius: 999px;
-  padding: 12px 24px;
+  padding: 14px 28px;
   background: #fff;
   box-shadow: 0 10px 24px rgb(91 75 138 / 0.12);
   cursor: pointer;
-  font-weight: 900;
+  font-weight: 700;
   color: #5b4b8a;
 }
 
@@ -548,11 +559,8 @@ body {
   cursor: default;
 }
 
-.pocetnik-add-marble__dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  display: inline-block;
+.pocetnik-add-marble__svg {
+  flex-shrink: 0;
 }
 
 .pocetnik-add-marble__label {

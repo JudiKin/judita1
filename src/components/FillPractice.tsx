@@ -56,7 +56,7 @@ export function FillPractice({ setup, onBack }: FillPracticeProps) {
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
         <PracticeTitle color="#5b4b8a">Doplň do {example.target}</PracticeTitle>
 
-        <PrimaryCard className="pocetnik-practice-card pocetnik-practice-card--center">
+        <PrimaryCard className="pocetnik-practice-card pocetnik-practice-card--center pocetnik-practice-card--fill">
           <MarbleBag
             count={currentCount}
             marbleColor={example.marbleColor}
