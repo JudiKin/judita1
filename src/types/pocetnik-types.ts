@@ -1,6 +1,8 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite' | 'numberSequence';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite' | 'numberSequence' | 'dominoWrite';
+
+export type DominoWriteMode = 'add' | 'subtract';
 
 export type NumberSequenceStep = 1 | 2 | 5 | 10;
 
@@ -57,6 +59,8 @@ export interface PocetnikSetup {
   primaryNumberSequenceSteps: NumberSequenceStep[];
   primaryNumberSequenceLength: number;
   primaryNumberSequenceMax: number;
+  primaryDominoWriteModes: DominoWriteMode[];
+  primaryDominoMaxDots: 6 | 9;
   maxQuestions: number;
 }
 
@@ -122,6 +126,8 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryNumberSequenceSteps: [1, 2, 5, 10],
   primaryNumberSequenceLength: 6,
   primaryNumberSequenceMax: 20,
+  primaryDominoWriteModes: ['add', 'subtract'],
+  primaryDominoMaxDots: 9,
   maxQuestions: 10,
 };
 
@@ -134,6 +140,7 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   findErrors: 'Najdi chyby',
   modelWrite: 'Modeluj, zapisuj',
   numberSequence: 'Číselné řady',
+  dominoWrite: 'Zapiš a sečti',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
@@ -145,4 +152,5 @@ export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   findErrors: 'Najdi chyby',
   modelWrite: 'Modeluj',
   numberSequence: 'Řady',
+  dominoWrite: 'Domino',
 };

@@ -3,6 +3,7 @@ import {
   DEFAULT_POCETNIK_SETUP,
   PRIMARY_ENVIRONMENT_LABELS,
   PRIMARY_ENVIRONMENT_SHORT,
+  type DominoWriteMode,
   type ModelWriteMode,
   type NumberSequenceStep,
   type PocetnikSetup,
@@ -17,6 +18,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
   const [setup, setSetup] = useState<PocetnikSetup>(DEFAULT_POCETNIK_SETUP);
   const modelWriteModes = setup.primaryModelWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryModelWriteModes;
   const numberSequenceSteps = setup.primaryNumberSequenceSteps ?? DEFAULT_POCETNIK_SETUP.primaryNumberSequenceSteps;
+  const dominoWriteModes = setup.primaryDominoWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryDominoWriteModes;
 
   const updateEnvironment = (primaryEnvironment: PrimaryEnvironment) => {
     setSetup((current) => ({
@@ -66,7 +68,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                         ? 'Modeluj sčítání nebo odčítání s tečkami a zapisuj rozdělení přes desítku.'
                         : setup.primaryEnvironment === 'numberSequence'
                           ? 'Doplň chybějící číslo v číselné řadě, např. 0, 2, 4, ?, 8, 10.'
-                          : 'Doplň kuličky do pytlíku na zvolený počet.'}
+                          : setup.primaryEnvironment === 'dominoWrite'
+                            ? 'Spočítej tečky na domino, zapiš sčítání nebo odčítání a výsledek.'
+                            : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -361,6 +365,57 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 <option value={20}>20</option>
                 <option value={50}>50</option>
                 <option value={100}>100</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'dominoWrite' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <div className="pocetnik-setup__mode-list" style={{ gridColumn: '1 / -1' }}>
+              <label className={`pocetnik-setup__mode-option ${dominoWriteModes.includes('add') ? 'is-active' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={dominoWriteModes.includes('add')}
+                  onChange={(event) => {
+                    setSetup((current) => {
+                      const currentModes = current.primaryDominoWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryDominoWriteModes;
+                      const next = event.target.checked
+                        ? [...new Set([...currentModes, 'add' as DominoWriteMode])]
+                        : currentModes.filter((mode) => mode !== 'add');
+                      return { ...current, primaryDominoWriteModes: next.length > 0 ? next : ['add'] };
+                    });
+                  }}
+                />
+                Sčítání
+              </label>
+              <label className={`pocetnik-setup__mode-option ${dominoWriteModes.includes('subtract') ? 'is-active' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={dominoWriteModes.includes('subtract')}
+                  onChange={(event) => {
+                    setSetup((current) => {
+                      const currentModes = current.primaryDominoWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryDominoWriteModes;
+                      const next = event.target.checked
+                        ? [...new Set([...currentModes, 'subtract' as DominoWriteMode])]
+                        : currentModes.filter((mode) => mode !== 'subtract');
+                      return { ...current, primaryDominoWriteModes: next.length > 0 ? next : ['subtract'] };
+                    });
+                  }}
+                />
+                Odčítání
+              </label>
+            </div>
+            <label className="pocetnik-setup__field">
+              Maximum teček na polovině
+              <select
+                value={setup.primaryDominoMaxDots}
+                onChange={(event) =>
+                  setSetup((current) => ({ ...current, primaryDominoMaxDots: Number(event.target.value) as 6 | 9 }))
+                }
+              >
+                <option value={6}>0–6 (klasické domino)</option>
+                <option value={9}>0–9</option>
               </select>
             </label>
           </div>
