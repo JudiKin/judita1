@@ -17,11 +17,11 @@ Interaktivní procvičování pro první ročník ZŠ.
 
 ## Spuštění v prohlížeči (bez terminálu)
 
-**https://cdn.jsdelivr.net/gh/JudiKin/judita1@gh-pages/index.html**
+**https://cdn.statically.io/gh/JudiKin/judita1/gh-pages/index.html**
 
 Alternativa (po zapnutí GitHub Pages): **https://judikin.github.io/judita1/**
 
-> GitHub Pages: **Settings → Pages → Branch `gh-pages` → Save**
+> GitHub Pages: **Settings → Pages → Branch `gh-pages` (nebo `judita1` + složka `/docs`) → Save**
 
 ## Lokální spuštění
 
