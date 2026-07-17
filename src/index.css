@@ -203,7 +203,7 @@ body {
 
 .pocetnik-setup__env-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   gap: 8px;
   margin-top: 20px;
   padding: 8px;
@@ -380,7 +380,7 @@ body {
 
 @media (max-width: 720px) {
   .pocetnik-setup__env-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .pocetnik-compare-groups {
