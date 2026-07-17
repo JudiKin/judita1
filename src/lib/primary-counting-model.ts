@@ -18,6 +18,39 @@ const STICKER_URLS = [
   'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/7_dalsi%20symboly/Samolepky_1_1_coconut.svg',
 ];
 
+const COUNTING_AVOID_OBJECT_KINDS = new Set<MoreLessObjectKind>(['stickers', 'book']);
+
+const COUNTING_FALLBACK_OBJECT_KINDS: MoreLessObjectKind[] = [
+  'coconuts',
+  'cubes',
+  'yellow-cube',
+  'green-cube',
+  'apple',
+  'ball',
+];
+
+export const DEFAULT_COUNTING_OBJECT_TYPES: MoreLessObjectKind[] = [
+  'coconuts',
+  'cubes',
+  'yellow-cube',
+  'green-cube',
+  'purple-cube',
+  'red-cube',
+  'yellow-circle',
+  'purple-square',
+  'red-plus',
+  'apple',
+  'ball',
+  'pencil',
+  'bread',
+  'toy',
+];
+
+export function visibleCountingObjectKinds(kinds: MoreLessObjectKind[]): MoreLessObjectKind[] {
+  const filtered = kinds.filter((kind) => !COUNTING_AVOID_OBJECT_KINDS.has(kind));
+  return filtered.length > 0 ? filtered : COUNTING_FALLBACK_OBJECT_KINDS;
+}
+
 export function normalizeCountRange(setup: PocetnikSetup): { min: number; max: number } {
   const rawMin = Number(setup.primaryCountingMin);
   const rawMax = Number(setup.primaryCountingMax);
@@ -51,7 +84,9 @@ function pickRandomCount(min: number, max: number, random: () => number): number
 
 export function buildCountingSession(setup: PocetnikSetup, count: number, seed: number): CountingExample[] {
   const { min, max } = normalizeCountRange(setup);
-  const objectKinds = setup.primaryCountingObjectTypes.length > 0 ? setup.primaryCountingObjectTypes : ['coconuts'];
+  const objectKinds = visibleCountingObjectKinds(
+    setup.primaryCountingObjectTypes.length > 0 ? setup.primaryCountingObjectTypes : DEFAULT_COUNTING_OBJECT_TYPES,
+  );
   const answerModes = setup.primaryCountingAnswerModes.length > 0 ? setup.primaryCountingAnswerModes : ['dots'];
   const random = createRng(seed);
 
