@@ -8,6 +8,7 @@ import { PayPractice } from './components/PayPractice';
 import { FillPractice } from './components/FillPractice';
 import { FindErrorsPractice } from './components/FindErrorsPractice';
 import { ModelWritePractice } from './components/ModelWritePractice';
+import { NumberSequencePractice } from './components/NumberSequencePractice';
 
 type Screen = 'setup' | 'practice';
 
@@ -33,6 +34,9 @@ export default function App() {
     }
     if (setup.primaryEnvironment === 'modelWrite') {
       return <ModelWritePractice setup={setup} onBack={() => setScreen('setup')} />;
+    }
+    if (setup.primaryEnvironment === 'numberSequence') {
+      return <NumberSequencePractice setup={setup} onBack={() => setScreen('setup')} />;
     }
     return <PatternPractice setup={setup} onBack={() => setScreen('setup')} />;
   }
