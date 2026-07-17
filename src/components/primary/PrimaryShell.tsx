@@ -4,6 +4,7 @@ export const PRIMARY_BACKGROUNDS = {
   softGreen: '#E7F9EE',
   beige: '#F5E6D0',
   softOrange: '#FFF3E0',
+  softBlue: '#E8F4FD',
 } as const;
 
 interface PrimaryShellProps {

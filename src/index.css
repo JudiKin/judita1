@@ -118,7 +118,7 @@ body {
 
 .pocetnik-setup__env-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin-top: 20px;
   padding: 8px;
@@ -256,4 +256,173 @@ body {
   .pocetnik-compare-groups__divider {
     margin: 0 auto;
   }
+
+  .pocetnik-pay-coins {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pocetnik-pay-shop {
+  display: flex;
+  justify-content: center;
+}
+
+.pocetnik-pay-shop__item-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pocetnik-shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pocetnik-shop-item__label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.pocetnik-price-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  border-radius: 16px;
+  padding: 10px 18px;
+  background: #fef08a;
+  border: 3px solid #ca8a04;
+  box-shadow: 0 8px 0 #a16207;
+  transform: rotate(-4deg);
+}
+
+.pocetnik-price-tag__value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #713f12;
+  line-height: 1;
+}
+
+.pocetnik-price-tag__currency {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
+.pocetnik-pay-tray {
+  margin-top: 24px;
+  border-radius: 24px;
+  padding: 18px 20px;
+  background: rgb(255 255 255 / 0.88);
+  border: 2px solid rgb(29 78 216 / 0.12);
+  box-shadow: 0 12px 28px rgb(29 78 216 / 0.08);
+}
+
+.pocetnik-pay-tray__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.pocetnik-pay-tray__coins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 52px;
+  align-items: center;
+}
+
+.pocetnik-pay-tray__empty {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.pocetnik-selected-coin {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 2px rgb(29 78 216 / 0.15);
+}
+
+.pocetnik-pay-coins {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pocetnik-coin {
+  --coin-tone: #d4a017;
+  min-height: 112px;
+  border: none;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 25%, #fff6bf, var(--coin-tone));
+  box-shadow: 0 10px 0 rgb(0 0 0 / 0.18), 0 16px 24px rgb(0 0 0 / 0.12);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+}
+
+.pocetnik-coin:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.pocetnik-coin:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 rgb(0 0 0 / 0.18);
+}
+
+.pocetnik-coin:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.pocetnik-coin__value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #78350f;
+  line-height: 1;
+}
+
+.pocetnik-coin__currency {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
+.pocetnik-pay-submit {
+  border: none;
+  border-radius: 999px;
+  padding: 16px 36px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 0 #1d4ed8;
+}
+
+.pocetnik-pay-submit:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: default;
+}
+
+.pocetnik-pay-submit:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #1d4ed8;
 }

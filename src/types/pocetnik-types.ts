@@ -1,6 +1,6 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay';
 
 export type SequencePatternKind = 'AB' | 'AAB' | 'AAAB' | 'ABC' | 'AABB' | 'ABAC';
 
@@ -11,6 +11,10 @@ export type SequenceItemKind = 'yellow-cube' | 'green-cube' | 'purple-cube' | 'r
 export type CountingAnswerMode = 'dots' | 'marks' | 'numbers';
 
 export type CountingObjectType = 'coconuts' | 'cubes' | 'stickers';
+
+export type PayItemKind = 'apple' | 'ball' | 'book' | 'pencil' | 'bread' | 'toy';
+
+export type PayCoinValue = 1 | 2 | 5 | 10;
 
 export interface PocetnikSetup {
   schoolStage: SchoolStage;
@@ -29,6 +33,10 @@ export interface PocetnikSetup {
   primaryMoreLessMax: number;
   primaryMoreLessMaxDelta: number;
   primaryMoreLessObjectTypes: CountingObjectType[];
+  primaryPayMinPrice: number;
+  primaryPayMaxPrice: number;
+  primaryPayCoins: PayCoinValue[];
+  primaryPayItems: PayItemKind[];
   maxQuestions: number;
 }
 
@@ -49,6 +57,10 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryMoreLessMax: 6,
   primaryMoreLessMaxDelta: 2,
   primaryMoreLessObjectTypes: ['coconuts', 'cubes'],
+  primaryPayMinPrice: 1,
+  primaryPayMaxPrice: 8,
+  primaryPayCoins: [1, 2, 5],
+  primaryPayItems: ['apple', 'ball', 'book', 'pencil', 'bread', 'toy'],
   maxQuestions: 10,
 };
 
@@ -56,10 +68,12 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   patterns: 'Pokračuj ve vzoru',
   counting: 'Počítej',
   moreLess: 'Porovnej počet',
+  pay: 'Zaplať',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   patterns: 'Pokračuj',
   counting: 'Počítej',
   moreLess: 'Porovnej počet',
+  pay: 'Zaplať',
 };

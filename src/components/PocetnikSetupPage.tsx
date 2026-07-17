@@ -47,7 +47,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
               ? 'Doplň symboly ve vzoru AB, AAB nebo AAAB.'
               : setup.primaryEnvironment === 'counting'
                 ? 'Spočítej objekty a vyber správný počet.'
-                : 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'}
+                : setup.primaryEnvironment === 'moreLess'
+                  ? 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'
+                  : 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'}
           </p>
         </div>
 
@@ -134,6 +136,49 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 <option value={1}>±1</option>
                 <option value={2}>±2</option>
                 <option value={3}>±3</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'pay' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Nejnižší cena (Kč)
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryPayMinPrice}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryPayMinPrice: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Nejvýší cena (Kč)
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryPayMaxPrice}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryPayMaxPrice: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Dostupné mince
+              <select
+                value={setup.primaryPayCoins.join(',')}
+                onChange={(event) => {
+                  const mapping: Record<string, PocetnikSetup['primaryPayCoins']> = {
+                    '1,2': [1, 2],
+                    '1,2,5': [1, 2, 5],
+                    '1,2,5,10': [1, 2, 5, 10],
+                  };
+                  setSetup((current) => ({ ...current, primaryPayCoins: mapping[event.target.value] ?? [1, 2, 5] }));
+                }}
+              >
+                <option value="1,2">1 Kč a 2 Kč</option>
+                <option value="1,2,5">1 Kč, 2 Kč a 5 Kč</option>
+                <option value="1,2,5,10">1 Kč, 2 Kč, 5 Kč a 10 Kč</option>
               </select>
             </label>
           </div>
