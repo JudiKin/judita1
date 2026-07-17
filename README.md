@@ -6,15 +6,24 @@ Interaktivní procvičování pro první ročník ZŠ.
 
 - **Pokračuj ve vzoru** — doplň symboly ve vzoru (AB, AAB, AAAB)
 - **Počítej** — spočítej objekty a vyber správný počet
-- **Porovnej počet** — porovnej dvě skupiny a vyber, jestli je vpravo stejně, o 1/2 víc, nebo o 1/2 míň
-- **Zaplať** — podívej se na cenovku u předmětu a vyber mince, aby sis mohl koupit
-- **Doplň** — doplň kuličky do pytlíku na zvolený počet
+- **Porovnej počet** — porovnej dvě skupiny
+- **Zaplať** — vyber mince podle cenovky
+- **Doplň** — doplň kuličky do pytlíku
+- **Najdi chyby** — urči správný nebo chybný příklad
+- **Modeluj, zapisuj** — sčítání a odčítání s tečkami
+- **Číselné řady** — doplň chybějící číslo v řadě
+- **Domino** — zapiš a sečti, doplň a zapiš
+- **Křížovka – najdi součet** — sousední čísla v mřížce
 
-## Spuštění
+## Spuštění v prohlížeči (bez terminálu)
+
+**https://judikin.github.io/judita1/**
+
+> Jednorázově v GitHubu: **Settings → Pages → Source → Branch `gh-pages` → Save**
+
+## Lokální spuštění
 
 ```bash
 npm install
 npm run dev
 ```
-
-Aplikace běží na `http://localhost:5173`.
