@@ -154,7 +154,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
               />
             </label>
             <label className="pocetnik-setup__field">
-              Nejvýší cena (Kč)
+              Nejvyšší cena (Kč)
               <input
                 type="number"
                 min={1}
