@@ -146,7 +146,7 @@ function buildSubtractExample(index: number, random: () => number): ModelWriteEx
 
 export function buildModelWriteSession(setup: PocetnikSetup, count: number, seed: number): ModelWriteExample[] {
   const random = createRng(seed);
-  const modes = setup.primaryModelWriteModes.length > 0 ? setup.primaryModelWriteModes : ['add', 'subtract'];
+  const modes = setup.primaryModelWriteModes?.length ? setup.primaryModelWriteModes : ['add', 'subtract'];
   const pickedModes = Array.from({ length: count }, () => modes[Math.floor(random() * modes.length)] as ModelWriteMode);
 
   shuffleInPlace(pickedModes, random);
@@ -161,6 +161,11 @@ export function buildModelWriteSession(setup: PocetnikSetup, count: number, seed
       examples.push({ ...example, index: examples.length });
       index += 1;
     }
+  }
+
+  if (examples.length === 0) {
+    const fallback = buildAddExample(0, random);
+    return fallback ? [fallback] : [];
   }
 
   return examples;

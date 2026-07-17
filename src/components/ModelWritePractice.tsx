@@ -24,9 +24,22 @@ export function ModelWritePractice({ setup, onBack }: ModelWritePracticeProps) {
   const { example, index, goNext } = usePracticeDeck(setup, buildModelWriteSession);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
+  const [pickedSplit, setPickedSplit] = useState<{ first: number; second: number } | null>(null);
+
+  if (!example) {
+    return (
+      <PrimaryShell background={PRIMARY_BACKGROUNDS.softBlue}>
+        <PracticeLayout>
+          <PracticeHeader questionNumber={1} onBack={onBack} onNext={onBack} canNext />
+          <PracticeHint tone="error">Nepodařilo se načíst úlohu. Zkus to znovu z menu.</PracticeHint>
+        </PracticeLayout>
+      </PrimaryShell>
+    );
+  }
 
   const handlePick = (first: number, second: number) => {
     if (completed) return;
+    setPickedSplit({ first, second });
     const isCorrect = first === example.splitFirst && second === example.splitSecond;
     setFeedback(isCorrect);
     setCompleted(isCorrect);
@@ -37,6 +50,7 @@ export function ModelWritePractice({ setup, onBack }: ModelWritePracticeProps) {
     goNext();
     setCompleted(false);
     setFeedback(null);
+    setPickedSplit(null);
   };
 
   const title = example.mode === 'add' ? 'Sčítej s tečkami' : 'Odčítej s tečkami';
@@ -55,8 +69,8 @@ export function ModelWritePractice({ setup, onBack }: ModelWritePracticeProps) {
             mode={example.mode}
             left={example.left}
             right={example.right}
-            pickedFirst={completed ? example.splitFirst : null}
-            pickedSecond={completed ? example.splitSecond : null}
+            pickedFirst={pickedSplit?.first ?? null}
+            pickedSecond={pickedSplit?.second ?? null}
           />
         </PrimaryCard>
 
