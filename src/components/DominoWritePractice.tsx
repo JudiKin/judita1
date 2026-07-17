@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 import type { PocetnikSetup } from '../types/pocetnik-types';
-import { buildDominoWriteSession, buildNumberChoices } from '../lib/primary-domino-write-model';
+import {
+  buildDominoWriteSession,
+  buildNumberChoices,
+  dominoShownLeft,
+  dominoShownRight,
+  type DominoWriteExample,
+} from '../lib/primary-domino-write-model';
 import { createRng } from '../lib/practice-shuffle';
 import { usePracticeDeck } from '../hooks/usePracticeDeck';
 import {
@@ -14,7 +20,7 @@ import {
   PrimaryShell,
   PRIMARY_BACKGROUNDS,
 } from './primary/PrimaryShell';
-import { DominoEquation, DominoTile } from './primary/DominoWriteVisuals';
+import { DominoEquation, DominoTargetSum, DominoTile } from './primary/DominoWriteVisuals';
 
 interface DominoWritePracticeProps {
   setup: PocetnikSetup;
@@ -22,6 +28,16 @@ interface DominoWritePracticeProps {
 }
 
 type ActiveField = 'left' | 'right' | 'result';
+
+function isLeftMissing(example: DominoWriteExample, leftValue: number | null): boolean {
+  if (example.mode !== 'fillAdd') return leftValue === null;
+  return example.missingSide === 'left' || example.missingSide === 'both' ? leftValue === null : false;
+}
+
+function isRightMissing(example: DominoWriteExample, rightValue: number | null): boolean {
+  if (example.mode !== 'fillAdd') return rightValue === null;
+  return example.missingSide === 'right' || example.missingSide === 'both' ? rightValue === null : false;
+}
 
 export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps) {
   const { example, index, goNext } = usePracticeDeck(setup, buildDominoWriteSession);
@@ -31,15 +47,18 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
 
-  const activeField: ActiveField | null = completed
-    ? null
-    : leftValue === null
-      ? 'left'
-      : rightValue === null
-        ? 'right'
-        : resultValue === null
-          ? 'result'
-          : null;
+  const activeField: ActiveField | null =
+    !example || completed
+      ? null
+      : isLeftMissing(example, leftValue)
+        ? 'left'
+        : isRightMissing(example, rightValue)
+          ? 'right'
+          : example.mode === 'fillAdd'
+            ? null
+            : resultValue === null
+              ? 'result'
+              : null;
 
   const numberOptions = useMemo(() => {
     if (!example || activeField === null) return [];
@@ -80,6 +99,9 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
         }, 700);
         return;
       }
+      if (example.mode === 'fillAdd' && !isRightMissing(example, rightValue)) {
+        setCompleted(true);
+      }
       window.setTimeout(() => setFeedback(null), 500);
       return;
     }
@@ -94,6 +116,9 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
           setRightValue(null);
         }, 700);
         return;
+      }
+      if (example.mode === 'fillAdd') {
+        setCompleted(true);
       }
       window.setTimeout(() => setFeedback(null), 500);
       return;
@@ -115,7 +140,11 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
     setFeedback(null);
   };
 
-  const title = example.mode === 'add' ? 'Zapiš a sečti' : 'Zapiš a odečti';
+  const title =
+    example.mode === 'fillAdd' ? 'Doplň a zapiš' : example.mode === 'add' ? 'Zapiš a sečti' : 'Zapiš a odečti';
+
+  const shownLeft = dominoShownLeft(example);
+  const shownRight = dominoShownRight(example);
 
   return (
     <PrimaryShell background={PRIMARY_BACKGROUNDS.softOrange}>
@@ -125,14 +154,20 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
         <PracticeTitle color="#9a3412">{title}</PracticeTitle>
 
         <PrimaryCard className="pocetnik-practice-card pocetnik-domino-card">
-          <DominoTile leftDots={example.leftDots} rightDots={example.rightDots} />
+          <DominoTile
+            leftDots={shownLeft}
+            rightDots={shownRight}
+            filledLeft={example.mode === 'fillAdd' ? leftValue : null}
+            filledRight={example.mode === 'fillAdd' ? rightValue : null}
+          />
           <DominoEquation
             mode={example.mode}
-            leftValue={leftValue}
-            rightValue={rightValue}
+            leftValue={example.mode === 'fillAdd' && shownLeft !== null ? shownLeft : leftValue}
+            rightValue={example.mode === 'fillAdd' && shownRight !== null ? shownRight : rightValue}
             resultValue={resultValue}
             activeField={activeField}
           />
+          {example.mode === 'fillAdd' ? <DominoTargetSum value={example.answer} /> : null}
         </PrimaryCard>
 
         <PracticeOptions>
@@ -152,16 +187,26 @@ export function DominoWritePractice({ setup, onBack }: DominoWritePracticeProps)
         {completed ? (
           <PracticeHint tone="success">Správně. Pokračuj šipkou.</PracticeHint>
         ) : feedback === false ? (
-          <PracticeHint tone="error">Zkus to znovu — spočítej tečky na domino.</PracticeHint>
+          <PracticeHint tone="error">
+            {example.mode === 'fillAdd'
+              ? 'Zkus to znovu — kolik teček chybí, aby součet seděl?'
+              : 'Zkus to znovu — spočítej tečky na domino.'}
+          </PracticeHint>
         ) : (
           <PracticeHint tone="neutral">
-            {activeField === 'left'
-              ? 'Kolik teček je vlevo?'
-              : activeField === 'right'
-                ? 'Kolik teček je vpravo?'
-                : example.mode === 'add'
-                  ? 'Kolik je dohromady?'
-                  : 'Kolik zůstane?'}
+            {example.mode === 'fillAdd'
+              ? activeField === 'left'
+                ? `Doplň levou stranu domina. Součet má být ${example.answer}.`
+                : activeField === 'right'
+                  ? `Doplň pravou stranu domina. Součet má být ${example.answer}.`
+                  : `Doplň chybějící tečky a čísla tak, aby součet byl ${example.answer}.`
+              : activeField === 'left'
+                ? 'Kolik teček je vlevo?'
+                : activeField === 'right'
+                  ? 'Kolik teček je vpravo?'
+                  : example.mode === 'add'
+                    ? 'Kolik je dohromady?'
+                    : 'Kolik zůstane?'}
           </PracticeHint>
         )}
       </PracticeLayout>
