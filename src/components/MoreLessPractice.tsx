@@ -49,14 +49,14 @@ export function MoreLessPractice({ setup, onBack }: MoreLessPracticeProps) {
           <div className="pocetnik-compare-groups">
             <div>
               <div className="pocetnik-compare-groups__label">Levá skupina</div>
-              <ObjectGroup count={example.leftCount} objectType={example.objectType} stickerUrl={example.stickerUrl} />
+              <ObjectGroup count={example.leftCount} objectKind={example.objectKind} stickerUrl={example.stickerUrl} />
             </div>
             <div className="pocetnik-compare-groups__divider" aria-hidden="true">
               ?
             </div>
             <div>
               <div className="pocetnik-compare-groups__label">Pravá skupina</div>
-              <ObjectGroup count={example.rightCount} objectType={example.objectType} stickerUrl={example.stickerUrl} />
+              <ObjectGroup count={example.rightCount} objectKind={example.objectKind} stickerUrl={example.stickerUrl} />
             </div>
           </div>
         </PrimaryCard>

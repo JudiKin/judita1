@@ -1,4 +1,26 @@
 import type { PatternSymbol } from '../../lib/primary-pattern-model';
+import type { MoreLessObjectKind, PayItemKind, SequenceItemKind } from '../../types/pocetnik-types';
+import { ShopItem } from './PayVisuals';
+
+const PATTERN_KINDS = new Set<SequenceItemKind>([
+  'yellow-cube',
+  'green-cube',
+  'purple-cube',
+  'red-cube',
+  'yellow-circle',
+  'purple-square',
+  'red-plus',
+]);
+
+const PAY_KINDS = new Set<PayItemKind>(['apple', 'ball', 'book', 'pencil', 'bread', 'toy']);
+
+function isPatternKind(kind: MoreLessObjectKind): kind is SequenceItemKind {
+  return PATTERN_KINDS.has(kind as SequenceItemKind);
+}
+
+function isPayKind(kind: MoreLessObjectKind): kind is PayItemKind {
+  return PAY_KINDS.has(kind as PayItemKind);
+}
 
 const COLORS: Record<string, { top: string; left: string; right: string }> = {
   'yellow-cube': { top: '#ffd54f', left: '#ffb300', right: '#ff8f00' },
@@ -72,22 +94,37 @@ export function StickerObject({ url, index }: { url: string; index: number }) {
   );
 }
 
+export function CompareObject({
+  kind,
+  index,
+  stickerUrl,
+}: {
+  kind: MoreLessObjectKind;
+  index: number;
+  stickerUrl?: string;
+}) {
+  if (kind === 'stickers' && stickerUrl) return <StickerObject url={stickerUrl} index={index} />;
+  if (kind === 'coconuts') return <CoconutObject index={index} />;
+  if (kind === 'cubes') return <CubeObject index={index} />;
+  if (isPatternKind(kind)) return <PatternSymbolView symbol={{ id: kind, label: '' }} />;
+  if (isPayKind(kind)) return <ShopItem kind={kind} label="" size={72} showLabel={false} />;
+  return <CoconutObject index={index} />;
+}
+
 export function ObjectGroup({
   count,
-  objectType,
+  objectKind,
   stickerUrl,
 }: {
   count: number;
-  objectType: 'coconuts' | 'cubes' | 'stickers';
+  objectKind: MoreLessObjectKind;
   stickerUrl?: string;
 }) {
   return (
     <div className="pocetnik-object-group" aria-label={`Skupina ${count} objektů`}>
-      {Array.from({ length: count }, (_, index) => {
-        if (objectType === 'stickers' && stickerUrl) return <StickerObject key={index} url={stickerUrl} index={index} />;
-        if (objectType === 'cubes') return <CubeObject key={index} index={index} />;
-        return <CoconutObject key={index} index={index} />;
-      })}
+      {Array.from({ length: count }, (_, index) => (
+        <CompareObject key={index} kind={objectKind} index={index} stickerUrl={stickerUrl} />
+      ))}
     </div>
   );
 }

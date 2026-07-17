@@ -9,12 +9,22 @@ const ITEM_COLORS: Record<PayItemKind, { main: string; accent: string }> = {
   toy: { main: '#ec4899', accent: '#06b6d4' },
 };
 
-export function ShopItem({ kind, label }: { kind: PayItemKind; label: string }) {
+export function ShopItem({
+  kind,
+  label,
+  size = 160,
+  showLabel = true,
+}: {
+  kind: PayItemKind;
+  label: string;
+  size?: number;
+  showLabel?: boolean;
+}) {
   const colors = ITEM_COLORS[kind];
 
   return (
-    <div className="pocetnik-shop-item" aria-label={label}>
-      <svg viewBox="0 0 160 160" width={160} height={160} aria-hidden="true">
+    <div className="pocetnik-shop-item" aria-label={label || undefined} style={{ width: size }}>
+      <svg viewBox="0 0 160 160" width={size} height={size} aria-hidden="true">
         {kind === 'apple' ? (
           <>
             <circle cx="80" cy="88" r="46" fill={colors.main} />
@@ -60,7 +70,7 @@ export function ShopItem({ kind, label }: { kind: PayItemKind; label: string }) 
           </>
         ) : null}
       </svg>
-      <span className="pocetnik-shop-item__label">{label}</span>
+      {showLabel ? <span className="pocetnik-shop-item__label">{label}</span> : null}
     </div>
   );
 }

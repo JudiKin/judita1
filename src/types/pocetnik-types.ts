@@ -14,6 +14,8 @@ export type CountingAnswerMode = 'dots' | 'marks' | 'numbers';
 
 export type CountingObjectType = 'coconuts' | 'cubes' | 'stickers';
 
+export type MoreLessObjectKind = CountingObjectType | SequenceItemKind | PayItemKind;
+
 export type PayItemKind = 'apple' | 'ball' | 'book' | 'pencil' | 'bread' | 'toy';
 
 export type PayCoinValue = 1 | 2 | 5 | 10;
@@ -34,7 +36,7 @@ export interface PocetnikSetup {
   primaryMoreLessMin: number;
   primaryMoreLessMax: number;
   primaryMoreLessMaxDelta: number;
-  primaryMoreLessObjectTypes: CountingObjectType[];
+  primaryMoreLessObjectTypes: MoreLessObjectKind[];
   primaryPayMinPrice: number;
   primaryPayMaxPrice: number;
   primaryPayCoins: PayCoinValue[];
@@ -60,7 +62,23 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryMoreLessMin: 1,
   primaryMoreLessMax: 6,
   primaryMoreLessMaxDelta: 2,
-  primaryMoreLessObjectTypes: ['coconuts', 'cubes'],
+  primaryMoreLessObjectTypes: [
+    'coconuts',
+    'cubes',
+    'stickers',
+    'yellow-cube',
+    'green-cube',
+    'purple-cube',
+    'yellow-circle',
+    'purple-square',
+    'red-plus',
+    'apple',
+    'ball',
+    'book',
+    'pencil',
+    'bread',
+    'toy',
+  ],
   primaryPayMinPrice: 1,
   primaryPayMaxPrice: 8,
   primaryPayCoins: [1, 2, 5],
