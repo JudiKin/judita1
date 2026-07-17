@@ -34,7 +34,7 @@ export interface PocetnikSetup {
   primaryCountingMin: number;
   primaryCountingMax: number;
   primaryCountingAnswerModes: CountingAnswerMode[];
-  primaryCountingObjectTypes: CountingObjectType[];
+  primaryCountingObjectTypes: MoreLessObjectKind[];
   primaryMoreLessMin: number;
   primaryMoreLessMax: number;
   primaryMoreLessMaxDelta: number;
@@ -64,7 +64,23 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryCountingMin: 1,
   primaryCountingMax: 6,
   primaryCountingAnswerModes: ['dots'],
-  primaryCountingObjectTypes: ['coconuts', 'cubes', 'stickers'],
+  primaryCountingObjectTypes: [
+    'coconuts',
+    'cubes',
+    'stickers',
+    'yellow-cube',
+    'green-cube',
+    'purple-cube',
+    'yellow-circle',
+    'purple-square',
+    'red-plus',
+    'apple',
+    'ball',
+    'book',
+    'pencil',
+    'bread',
+    'toy',
+  ],
   primaryMoreLessMin: 1,
   primaryMoreLessMax: 6,
   primaryMoreLessMaxDelta: 2,

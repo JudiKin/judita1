@@ -1,10 +1,11 @@
-import type { CountingAnswerMode, CountingObjectType, PocetnikSetup } from '../types/pocetnik-types';
+import type { CountingAnswerMode, MoreLessObjectKind, PocetnikSetup } from '../types/pocetnik-types';
+import { MORE_LESS_OBJECT_LABELS } from './primary-more-less-model';
 import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface CountingExample {
   index: number;
   count: number;
-  objectType: CountingObjectType;
+  objectKind: MoreLessObjectKind;
   stickerUrl?: string;
   answerMode: CountingAnswerMode;
   options: number[];
@@ -17,17 +18,25 @@ const STICKER_URLS = [
   'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/7_dalsi%20symboly/Samolepky_1_1_coconut.svg',
 ];
 
-function clampCountRange(setup: PocetnikSetup): { min: number; max: number } {
-  const min = Math.max(1, Math.min(20, Math.floor(setup.primaryCountingMin || 1)));
-  const max = Math.max(min, Math.min(20, Math.floor(setup.primaryCountingMax || 6)));
+export function normalizeCountRange(setup: PocetnikSetup): { min: number; max: number } {
+  const rawMin = Number(setup.primaryCountingMin);
+  const rawMax = Number(setup.primaryCountingMax);
+  const min = Math.max(1, Math.min(20, Number.isFinite(rawMin) ? Math.floor(rawMin) : 1));
+  const max = Math.max(min, Math.min(20, Number.isFinite(rawMax) ? Math.floor(rawMax) : 6));
   return { min, max };
 }
 
+export function normalizeObjectCount(count: number): number {
+  if (!Number.isFinite(count)) return 1;
+  return Math.max(1, Math.floor(count));
+}
+
 function buildOptions(correct: number, min: number, max: number): number[] {
-  const values = new Set<number>([correct]);
+  const safeCorrect = normalizeObjectCount(correct);
+  const values = new Set<number>([safeCorrect]);
   for (let offset = 1; values.size < Math.min(6, max - min + 1) && offset <= 6; offset += 1) {
-    if (correct - offset >= min) values.add(correct - offset);
-    if (correct + offset <= max) values.add(correct + offset);
+    if (safeCorrect - offset >= min) values.add(safeCorrect - offset);
+    if (safeCorrect + offset <= max) values.add(safeCorrect + offset);
   }
   for (let candidate = min; values.size < Math.min(6, max - min + 1) && candidate <= max; candidate += 1) {
     values.add(candidate);
@@ -35,17 +44,21 @@ function buildOptions(correct: number, min: number, max: number): number[] {
   return Array.from(values).sort((a, b) => a - b);
 }
 
-export function buildCountingSession(setup: PocetnikSetup, count: number, seed: number): CountingExample[] {
-  const { min, max } = clampCountRange(setup);
+function pickRandomCount(min: number, max: number, random: () => number): number {
   const span = max - min + 1;
-  const objectTypes = setup.primaryCountingObjectTypes.length > 0 ? setup.primaryCountingObjectTypes : ['coconuts'];
+  return min + Math.floor(random() * span);
+}
+
+export function buildCountingSession(setup: PocetnikSetup, count: number, seed: number): CountingExample[] {
+  const { min, max } = normalizeCountRange(setup);
+  const objectKinds = setup.primaryCountingObjectTypes.length > 0 ? setup.primaryCountingObjectTypes : ['coconuts'];
   const answerModes = setup.primaryCountingAnswerModes.length > 0 ? setup.primaryCountingAnswerModes : ['dots'];
   const random = createRng(seed);
 
-  const counts = Array.from({ length: count }, () => min + Math.floor(random() * span));
-  const objectTypesPicked = Array.from(
+  const counts = Array.from({ length: count }, () => pickRandomCount(min, max, random));
+  const objectKindsPicked = Array.from(
     { length: count },
-    () => objectTypes[Math.floor(random() * objectTypes.length)] as CountingObjectType,
+    () => objectKinds[Math.floor(random() * objectKinds.length)] as MoreLessObjectKind,
   );
   const answerModesPicked = Array.from(
     { length: count },
@@ -54,19 +67,21 @@ export function buildCountingSession(setup: PocetnikSetup, count: number, seed: 
   const stickerIndices = Array.from({ length: count }, () => Math.floor(random() * STICKER_URLS.length));
 
   shuffleInPlace(counts, random);
-  shuffleInPlace(objectTypesPicked, random);
+  shuffleInPlace(objectKindsPicked, random);
   shuffleInPlace(answerModesPicked, random);
   shuffleInPlace(stickerIndices, random);
 
   return counts.map((value, index) => {
-    const objectType = objectTypesPicked[index];
+    const objectKind = objectKindsPicked[index];
+    const safeCount = normalizeObjectCount(value);
+
     return {
       index,
-      count: value,
-      objectType,
-      stickerUrl: objectType === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
+      count: safeCount,
+      objectKind,
+      stickerUrl: objectKind === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
       answerMode: answerModesPicked[index],
-      options: buildOptions(value, min, max),
+      options: buildOptions(safeCount, min, max),
     };
   });
 }
@@ -81,8 +96,4 @@ export const COUNTING_ANSWER_MODE_LABELS: Record<CountingAnswerMode, string> = {
   numbers: 'Čísla',
 };
 
-export const COUNTING_OBJECT_LABELS: Record<CountingObjectType, string> = {
-  coconuts: 'Kokosy',
-  cubes: 'Kostky',
-  stickers: 'Nálepky',
-};
+export { MORE_LESS_OBJECT_LABELS as COUNTING_OBJECT_LABELS };

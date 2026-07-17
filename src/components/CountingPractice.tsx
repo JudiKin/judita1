@@ -46,7 +46,7 @@ export function CountingPractice({ setup, onBack }: CountingPracticeProps) {
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
         <PracticeTitle color="#92400e">Počítej</PracticeTitle>
         <PrimaryCard className="pocetnik-practice-card pocetnik-practice-card--center">
-          <ObjectGroup count={example.count} objectKind={example.objectType} stickerUrl={example.stickerUrl} />
+          <ObjectGroup count={example.count} objectKind={example.objectKind} stickerUrl={example.stickerUrl} />
         </PrimaryCard>
         <PracticeOptions>
           {example.options.map((value, optionIndex) => (

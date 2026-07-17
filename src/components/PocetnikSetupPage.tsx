@@ -93,7 +93,13 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 min={1}
                 max={20}
                 value={setup.primaryCountingMin}
-                onChange={(event) => setSetup((current) => ({ ...current, primaryCountingMin: Number(event.target.value) }))}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setSetup((current) => ({
+                    ...current,
+                    primaryCountingMin: Number.isFinite(value) ? Math.max(1, Math.min(20, Math.floor(value))) : 1,
+                  }));
+                }}
               />
             </label>
             <label className="pocetnik-setup__field">
@@ -103,7 +109,16 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 min={1}
                 max={20}
                 value={setup.primaryCountingMax}
-                onChange={(event) => setSetup((current) => ({ ...current, primaryCountingMax: Number(event.target.value) }))}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setSetup((current) => {
+                    const nextMax = Number.isFinite(value) ? Math.max(1, Math.min(20, Math.floor(value))) : 6;
+                    return {
+                      ...current,
+                      primaryCountingMax: Math.max(current.primaryCountingMin, nextMax),
+                    };
+                  });
+                }}
               />
             </label>
           </div>

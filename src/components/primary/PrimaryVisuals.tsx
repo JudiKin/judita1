@@ -14,6 +14,9 @@ const PATTERN_KINDS = new Set<SequenceItemKind>([
 
 const PAY_KINDS = new Set<PayItemKind>(['apple', 'ball', 'book', 'pencil', 'bread', 'toy']);
 
+const DEFAULT_STICKER_URL =
+  'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/4_geometricke%20symboly/Samolepky_1_1_circle.svg';
+
 function isPatternKind(kind: MoreLessObjectKind): kind is SequenceItemKind {
   return PATTERN_KINDS.has(kind as SequenceItemKind);
 }
@@ -103,7 +106,9 @@ export function CompareObject({
   index: number;
   stickerUrl?: string;
 }) {
-  if (kind === 'stickers' && stickerUrl) return <StickerObject url={stickerUrl} index={index} />;
+  if (kind === 'stickers') {
+    return <StickerObject url={stickerUrl ?? DEFAULT_STICKER_URL} index={index} />;
+  }
   if (kind === 'coconuts') return <CoconutObject index={index} />;
   if (kind === 'cubes') return <CubeObject index={index} />;
   if (isPatternKind(kind)) return <PatternSymbolView symbol={{ id: kind, label: '' }} />;
@@ -120,9 +125,11 @@ export function ObjectGroup({
   objectKind: MoreLessObjectKind;
   stickerUrl?: string;
 }) {
+  const safeCount = Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 1;
+
   return (
-    <div className="pocetnik-object-group" aria-label={`Skupina ${count} objektů`}>
-      {Array.from({ length: count }, (_, index) => (
+    <div className="pocetnik-object-group" aria-label={`Skupina ${safeCount} objektů`}>
+      {Array.from({ length: safeCount }, (_, index) => (
         <CompareObject key={index} kind={objectKind} index={index} stickerUrl={stickerUrl} />
       ))}
     </div>
