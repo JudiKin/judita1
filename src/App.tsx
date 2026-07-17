@@ -10,6 +10,7 @@ import { FindErrorsPractice } from './components/FindErrorsPractice';
 import { ModelWritePractice } from './components/ModelWritePractice';
 import { NumberSequencePractice } from './components/NumberSequencePractice';
 import { DominoWritePractice } from './components/DominoWritePractice';
+import { SumSearchPractice } from './components/SumSearchPractice';
 
 type Screen = 'setup' | 'practice';
 
@@ -41,6 +42,9 @@ export default function App() {
     }
     if (setup.primaryEnvironment === 'dominoWrite') {
       return <DominoWritePractice setup={setup} onBack={() => setScreen('setup')} />;
+    }
+    if (setup.primaryEnvironment === 'sumSearch') {
+      return <SumSearchPractice setup={setup} onBack={() => setScreen('setup')} />;
     }
     return <PatternPractice setup={setup} onBack={() => setScreen('setup')} />;
   }
