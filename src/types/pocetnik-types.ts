@@ -1,6 +1,6 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors';
 
 export type FillMarbleColor = 'red' | 'orange';
 
@@ -19,6 +19,8 @@ export type MoreLessObjectKind = CountingObjectType | SequenceItemKind | PayItem
 export type PayItemKind = 'apple' | 'ball' | 'book' | 'pencil' | 'bread' | 'toy';
 
 export type PayCoinValue = 1 | 2 | 5 | 10;
+
+export type FindErrorKind = 'counting' | 'comparison' | 'pattern';
 
 export interface PocetnikSetup {
   schoolStage: SchoolStage;
@@ -43,6 +45,10 @@ export interface PocetnikSetup {
   primaryPayItems: PayItemKind[];
   primaryFillTarget: number;
   primaryFillMinStart: number;
+  primaryFindErrorsMin: number;
+  primaryFindErrorsMax: number;
+  primaryFindErrorsKinds: FindErrorKind[];
+  primaryFindErrorsObjectTypes: MoreLessObjectKind[];
   maxQuestions: number;
 }
 
@@ -85,6 +91,10 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryPayItems: ['apple', 'ball', 'book', 'pencil', 'bread', 'toy'],
   primaryFillTarget: 7,
   primaryFillMinStart: 0,
+  primaryFindErrorsMin: 1,
+  primaryFindErrorsMax: 6,
+  primaryFindErrorsKinds: ['counting', 'comparison', 'pattern'],
+  primaryFindErrorsObjectTypes: ['coconuts', 'cubes', 'yellow-cube', 'green-cube', 'apple', 'ball'],
   maxQuestions: 10,
 };
 
@@ -94,6 +104,7 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   moreLess: 'Porovnej počet',
   pay: 'Zaplať',
   fill: 'Doplň',
+  findErrors: 'Najdi chyby',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
@@ -102,4 +113,5 @@ export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   moreLess: 'Porovnej počet',
   pay: 'Zaplať',
   fill: 'Doplň',
+  findErrors: 'Najdi chyby',
 };

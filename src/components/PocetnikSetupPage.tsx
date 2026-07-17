@@ -51,7 +51,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                   ? 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'
                   : setup.primaryEnvironment === 'pay'
                     ? 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'
-                    : 'Doplň kuličky do pytlíku na zvolený počet.'}
+                    : setup.primaryEnvironment === 'findErrors'
+                      ? 'Podívej se na příklad a urči, jestli je správně, nebo obsahuje chybu.'
+                      : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -206,6 +208,31 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 max={9}
                 value={setup.primaryFillMinStart}
                 onChange={(event) => setSetup((current) => ({ ...current, primaryFillMinStart: Number(event.target.value) }))}
+              />
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'findErrors' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Minimum objektů
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryFindErrorsMin}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFindErrorsMin: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Maximum objektů
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryFindErrorsMax}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFindErrorsMax: Number(event.target.value) }))}
               />
             </label>
           </div>

@@ -53,7 +53,7 @@ function availablePatternTypes(setup: PocetnikSetup, objectCount: number): Seque
   });
 }
 
-function buildUnit(type: SequencePatternKind, objects: PatternSymbol[], seed: number): PatternSymbol[] {
+export function buildUnit(type: SequencePatternKind, objects: PatternSymbol[], seed: number): PatternSymbol[] {
   const letters = Array.from(new Set(PATTERN_UNITS[type]));
   const rotated = objects.map((_, index) => objects[(index + seed) % objects.length]);
   const map = new Map(letters.map((letter, index) => [letter, rotated[index % rotated.length]]));
