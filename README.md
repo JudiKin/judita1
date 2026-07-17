@@ -6,7 +6,7 @@ Interaktivní procvičování pro první ročník ZŠ.
 
 - **Pokračuj ve vzoru** — doplň symboly ve vzoru (AB, AAB, AAAB)
 - **Počítej** — spočítej objekty a vyber správný počet
-- **Naklikej víc/míň** — porovnej dvě skupiny a vyber, jestli je vpravo stejně, o 1/2 víc, nebo o 1/2 míň
+- **Porovnej počet** — porovnej dvě skupiny a vyber, jestli je vpravo stejně, o 1/2 víc, nebo o 1/2 míň
 
 ## Spuštění
 

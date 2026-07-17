@@ -47,7 +47,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
               ? 'Doplň symboly ve vzoru AB, AAB nebo AAAB.'
               : setup.primaryEnvironment === 'counting'
                 ? 'Spočítej objekty a vyber správný počet.'
-                : 'Porovnej dvě skupiny a naklikej, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'}
+                : 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'}
           </p>
         </div>
 

@@ -35,9 +35,8 @@ export function MoreLessPractice({ setup, onBack }: MoreLessPracticeProps) {
       {feedback !== null ? <FeedbackOverlay correct={feedback} /> : null}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 32px' }}>
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#9a3412', textTransform: 'uppercase' }}>
-          <span aria-hidden="true">👀</span>
-          <span>Naklikej víc/míň</span>
+        <div style={{ marginBottom: 20, fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#9a3412', textTransform: 'uppercase' }}>
+          Porovnej počet
         </div>
         <PrimaryCard style={{ padding: '24px 28px' } as React.CSSProperties}>
           <div className="pocetnik-compare-groups">
@@ -76,7 +75,7 @@ export function MoreLessPractice({ setup, onBack }: MoreLessPracticeProps) {
           ) : feedback === false ? (
             <div style={hintStyle('#dc2626')}>Zkus jinou možnost.</div>
           ) : (
-            <div style={hintStyle('#64748b')}>Klikni, jestli je vpravo stejně, víc, nebo míň.</div>
+            <div style={hintStyle('#64748b')}>Porovnej skupiny a vyber, jestli je vpravo stejně, víc, nebo míň.</div>
           )}
         </div>
       </div>

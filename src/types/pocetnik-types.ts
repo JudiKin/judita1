@@ -55,11 +55,11 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
 export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   patterns: 'Pokračuj ve vzoru',
   counting: 'Počítej',
-  moreLess: 'Naklikej víc/míň',
+  moreLess: 'Porovnej počet',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   patterns: 'Pokračuj',
   counting: 'Počítej',
-  moreLess: 'Víc/míň',
+  moreLess: 'Porovnej počet',
 };
