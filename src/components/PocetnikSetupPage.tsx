@@ -4,6 +4,7 @@ import {
   PRIMARY_ENVIRONMENT_LABELS,
   PRIMARY_ENVIRONMENT_SHORT,
   type ModelWriteMode,
+  type NumberSequenceStep,
   type PocetnikSetup,
   type PrimaryEnvironment,
 } from '../types/pocetnik-types';
@@ -15,6 +16,7 @@ interface PocetnikSetupPageProps {
 export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
   const [setup, setSetup] = useState<PocetnikSetup>(DEFAULT_POCETNIK_SETUP);
   const modelWriteModes = setup.primaryModelWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryModelWriteModes;
+  const numberSequenceSteps = setup.primaryNumberSequenceSteps ?? DEFAULT_POCETNIK_SETUP.primaryNumberSequenceSteps;
 
   const updateEnvironment = (primaryEnvironment: PrimaryEnvironment) => {
     setSetup((current) => ({
@@ -62,7 +64,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                       ? 'Podívej se na příklad a urči, jestli je správně, nebo obsahuje chybu.'
                       : setup.primaryEnvironment === 'modelWrite'
                         ? 'Modeluj sčítání nebo odčítání s tečkami a zapisuj rozdělení přes desítku.'
-                        : 'Doplň kuličky do pytlíku na zvolený počet.'}
+                        : setup.primaryEnvironment === 'numberSequence'
+                          ? 'Doplň chybějící číslo v číselné řadě, např. 0, 2, 4, ?, 8, 10.'
+                          : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -300,6 +304,64 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 }}
               />
               Odčítej s tečkami
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'numberSequence' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <div className="pocetnik-setup__mode-list" style={{ gridColumn: '1 / -1' }}>
+              {([1, 2, 5, 10] as NumberSequenceStep[]).map((step) => (
+                <label
+                  key={step}
+                  className={`pocetnik-setup__mode-option ${numberSequenceSteps.includes(step) ? 'is-active' : ''}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={numberSequenceSteps.includes(step)}
+                    onChange={(event) => {
+                      setSetup((current) => {
+                        const currentSteps = current.primaryNumberSequenceSteps ?? DEFAULT_POCETNIK_SETUP.primaryNumberSequenceSteps;
+                        const next = event.target.checked
+                          ? [...new Set([...currentSteps, step])]
+                          : currentSteps.filter((value) => value !== step);
+                        return {
+                          ...current,
+                          primaryNumberSequenceSteps: next.length > 0 ? next : [step],
+                        };
+                      });
+                    }}
+                  />
+                  {step === 1 ? 'Po jedné' : step === 2 ? 'Po dvou' : step === 5 ? 'Po pěti' : 'Po deseti'}
+                </label>
+              ))}
+            </div>
+            <label className="pocetnik-setup__field">
+              Počet čísel v řadě
+              <select
+                value={setup.primaryNumberSequenceLength}
+                onChange={(event) =>
+                  setSetup((current) => ({ ...current, primaryNumberSequenceLength: Number(event.target.value) }))
+                }
+              >
+                <option value={5}>5 čísel</option>
+                <option value={6}>6 čísel</option>
+                <option value={7}>7 čísel</option>
+                <option value={8}>8 čísel</option>
+              </select>
+            </label>
+            <label className="pocetnik-setup__field">
+              Nejvýše do
+              <select
+                value={setup.primaryNumberSequenceMax}
+                onChange={(event) =>
+                  setSetup((current) => ({ ...current, primaryNumberSequenceMax: Number(event.target.value) }))
+                }
+              >
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
             </label>
           </div>
         ) : null}
