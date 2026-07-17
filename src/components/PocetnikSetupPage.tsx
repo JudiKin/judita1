@@ -47,7 +47,13 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
               ? 'Doplň symboly ve vzoru AB, AAB nebo AAAB.'
               : setup.primaryEnvironment === 'counting'
                 ? 'Spočítej objekty a vyber správný počet.'
-                : 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'}
+                : setup.primaryEnvironment === 'moreLess'
+                  ? 'Porovnej dvě skupiny a vyber, jestli je vpravo stejně, o kolik víc, nebo o kolik míň.'
+                  : setup.primaryEnvironment === 'pay'
+                    ? 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'
+                    : setup.primaryEnvironment === 'findErrors'
+                      ? 'Podívej se na příklad a urči, jestli je správně, nebo obsahuje chybu.'
+                      : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -87,7 +93,13 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 min={1}
                 max={20}
                 value={setup.primaryCountingMin}
-                onChange={(event) => setSetup((current) => ({ ...current, primaryCountingMin: Number(event.target.value) }))}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setSetup((current) => ({
+                    ...current,
+                    primaryCountingMin: Number.isFinite(value) ? Math.max(1, Math.min(20, Math.floor(value))) : 1,
+                  }));
+                }}
               />
             </label>
             <label className="pocetnik-setup__field">
@@ -97,9 +109,23 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 min={1}
                 max={20}
                 value={setup.primaryCountingMax}
-                onChange={(event) => setSetup((current) => ({ ...current, primaryCountingMax: Number(event.target.value) }))}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setSetup((current) => {
+                    const nextMax = Number.isFinite(value) ? Math.max(1, Math.min(20, Math.floor(value))) : 6;
+                    return {
+                      ...current,
+                      primaryCountingMax: Math.max(current.primaryCountingMin, nextMax),
+                    };
+                  });
+                }}
               />
             </label>
+            {setup.primaryCountingMax > 6 ? (
+              <p style={{ margin: 0, gridColumn: '1 / -1', color: '#92400e', fontWeight: 700, lineHeight: 1.5 }}>
+                Při maximu nad 6 se odpovědi zobrazují jako čísla (tečky jdou jen do 6).
+              </p>
+            ) : null}
           </div>
         ) : null}
 
@@ -135,6 +161,99 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 <option value={2}>±2</option>
                 <option value={3}>±3</option>
               </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'pay' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Nejnižší cena (Kč)
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryPayMinPrice}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryPayMinPrice: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Nejvyšší cena (Kč)
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryPayMaxPrice}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryPayMaxPrice: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Dostupné mince
+              <select
+                value={setup.primaryPayCoins.join(',')}
+                onChange={(event) => {
+                  const mapping: Record<string, PocetnikSetup['primaryPayCoins']> = {
+                    '1,2': [1, 2],
+                    '1,2,5': [1, 2, 5],
+                    '1,2,5,10': [1, 2, 5, 10],
+                  };
+                  setSetup((current) => ({ ...current, primaryPayCoins: mapping[event.target.value] ?? [1, 2, 5] }));
+                }}
+              >
+                <option value="1,2">1 Kč a 2 Kč</option>
+                <option value="1,2,5">1 Kč, 2 Kč a 5 Kč</option>
+                <option value="1,2,5,10">1 Kč, 2 Kč, 5 Kč a 10 Kč</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'fill' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Doplň do (počet)
+              <input
+                type="number"
+                min={2}
+                max={10}
+                value={setup.primaryFillTarget}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFillTarget: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Nejméně kuliček na začátku
+              <input
+                type="number"
+                min={0}
+                max={9}
+                value={setup.primaryFillMinStart}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFillMinStart: Number(event.target.value) }))}
+              />
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'findErrors' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <label className="pocetnik-setup__field">
+              Minimum objektů
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryFindErrorsMin}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFindErrorsMin: Number(event.target.value) }))}
+              />
+            </label>
+            <label className="pocetnik-setup__field">
+              Maximum objektů
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={setup.primaryFindErrorsMax}
+                onChange={(event) => setSetup((current) => ({ ...current, primaryFindErrorsMax: Number(event.target.value) }))}
+              />
             </label>
           </div>
         ) : null}

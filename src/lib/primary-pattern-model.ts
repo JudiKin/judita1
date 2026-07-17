@@ -1,4 +1,5 @@
 import type { PocetnikSetup, SequenceItemKind, SequencePatternKind } from '../types/pocetnik-types';
+import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface PatternSymbol {
   id: SequenceItemKind;
@@ -52,21 +53,25 @@ function availablePatternTypes(setup: PocetnikSetup, objectCount: number): Seque
   });
 }
 
-function buildUnit(type: SequencePatternKind, objects: PatternSymbol[], seed: number): PatternSymbol[] {
+export function buildUnit(type: SequencePatternKind, objects: PatternSymbol[], seed: number): PatternSymbol[] {
   const letters = Array.from(new Set(PATTERN_UNITS[type]));
   const rotated = objects.map((_, index) => objects[(index + seed) % objects.length]);
   const map = new Map(letters.map((letter, index) => [letter, rotated[index % rotated.length]]));
   return PATTERN_UNITS[type].map((letter) => map.get(letter) ?? rotated[0]);
 }
 
-export function buildPatternExample(setup: PocetnikSetup, index: number): PatternExample {
+function buildPatternExampleAt(
+  setup: PocetnikSetup,
+  index: number,
+  patternType: SequencePatternKind,
+  unitSeed: number,
+  visibleOffset: number,
+): PatternExample {
   const objects = availableObjects(setup);
-  const types = availablePatternTypes(setup, objects.length);
-  const patternType = types[index % types.length] ?? 'AB';
-  const unit = buildUnit(patternType, objects, index);
+  const unit = buildUnit(patternType, objects, unitSeed);
   const rowCount = setup.primaryPatternRows;
   const blankMultiplier = setup.primaryPatternDifficulty === 'hard' ? 3 : setup.primaryPatternDifficulty === 'medium' ? 2 : 1;
-  const visibleCount = Math.max(unit.length * (rowCount + 1) + (index % unit.length), rowCount * 4);
+  const visibleCount = Math.max(unit.length * (rowCount + 1) + visibleOffset, rowCount * 4);
   const blankCount = rowCount * blankMultiplier;
   const palette = Array.from(new Map(unit.map((symbol) => [symbol.id, symbol])).values());
 
@@ -79,6 +84,28 @@ export function buildPatternExample(setup: PocetnikSetup, index: number): Patter
     rowCount,
     palette,
   };
+}
+
+export function buildPatternSession(setup: PocetnikSetup, count: number, seed: number): PatternExample[] {
+  const objects = availableObjects(setup);
+  const types = availablePatternTypes(setup, objects.length);
+  const random = createRng(seed);
+
+  const patternTypes = Array.from({ length: count }, () => types[Math.floor(random() * types.length)] ?? 'AB');
+  const unitSeeds = Array.from({ length: count }, () => Math.floor(random() * 1000));
+  const visibleOffsets = Array.from({ length: count }, () => Math.floor(random() * 4));
+
+  shuffleInPlace(patternTypes, random);
+  shuffleInPlace(unitSeeds, random);
+  shuffleInPlace(visibleOffsets, random);
+
+  return patternTypes.map((patternType, index) =>
+    buildPatternExampleAt(setup, index, patternType, unitSeeds[index], visibleOffsets[index]),
+  );
+}
+
+export function buildPatternExample(setup: PocetnikSetup, index: number): PatternExample {
+  return buildPatternSession(setup, index + 1, 918273)[index];
 }
 
 export function symbolAt(example: PatternExample, position: number): PatternSymbol {

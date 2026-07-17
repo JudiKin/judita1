@@ -1,4 +1,29 @@
 import type { PatternSymbol } from '../../lib/primary-pattern-model';
+import type { MoreLessObjectKind, PayItemKind, SequenceItemKind } from '../../types/pocetnik-types';
+import { ShopItem } from './PayVisuals';
+
+const PATTERN_KINDS = new Set<SequenceItemKind>([
+  'yellow-cube',
+  'green-cube',
+  'purple-cube',
+  'red-cube',
+  'yellow-circle',
+  'purple-square',
+  'red-plus',
+]);
+
+const PAY_KINDS = new Set<PayItemKind>(['apple', 'ball', 'book', 'pencil', 'bread', 'toy']);
+
+const DEFAULT_STICKER_URL =
+  'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/4_geometricke%20symboly/Samolepky_1_1_circle.svg';
+
+function isPatternKind(kind: MoreLessObjectKind): kind is SequenceItemKind {
+  return PATTERN_KINDS.has(kind as SequenceItemKind);
+}
+
+function isPayKind(kind: MoreLessObjectKind): kind is PayItemKind {
+  return PAY_KINDS.has(kind as PayItemKind);
+}
 
 const COLORS: Record<string, { top: string; left: string; right: string }> = {
   'yellow-cube': { top: '#ffd54f', left: '#ffb300', right: '#ff8f00' },
@@ -72,22 +97,43 @@ export function StickerObject({ url, index }: { url: string; index: number }) {
   );
 }
 
+export function CompareObject({
+  kind,
+  index,
+  stickerUrl,
+}: {
+  kind: MoreLessObjectKind;
+  index: number;
+  stickerUrl?: string;
+}) {
+  if (kind === 'stickers') {
+    return <StickerObject url={stickerUrl ?? DEFAULT_STICKER_URL} index={index} />;
+  }
+  if (kind === 'coconuts') return <CoconutObject index={index} />;
+  if (kind === 'cubes') return <CubeObject index={index} />;
+  if (isPatternKind(kind)) return <PatternSymbolView symbol={{ id: kind, label: '' }} />;
+  if (isPayKind(kind)) return <ShopItem kind={kind} label="" size={72} showLabel={false} />;
+  return <CoconutObject index={index} />;
+}
+
 export function ObjectGroup({
   count,
-  objectType,
+  objectKind,
   stickerUrl,
 }: {
   count: number;
-  objectType: 'coconuts' | 'cubes' | 'stickers';
+  objectKind: MoreLessObjectKind;
   stickerUrl?: string;
 }) {
+  const safeCount = Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 1;
+  const densityClass =
+    safeCount > 12 ? 'pocetnik-object-group--dense' : safeCount > 8 ? 'pocetnik-object-group--compact' : '';
+
   return (
-    <div className="pocetnik-object-group" aria-label={`Skupina ${count} objektů`}>
-      {Array.from({ length: count }, (_, index) => {
-        if (objectType === 'stickers' && stickerUrl) return <StickerObject key={index} url={stickerUrl} index={index} />;
-        if (objectType === 'cubes') return <CubeObject key={index} index={index} />;
-        return <CoconutObject key={index} index={index} />;
-      })}
+    <div className={`pocetnik-object-group ${densityClass}`.trim()} aria-label={`Skupina ${safeCount} objektů`}>
+      {Array.from({ length: safeCount }, (_, index) => (
+        <CompareObject key={index} kind={objectKind} index={index} stickerUrl={stickerUrl} />
+      ))}
     </div>
   );
 }
@@ -129,6 +175,31 @@ export function DotsAnswer({ value }: { value: number }) {
           }}
         />
       ))}
+    </div>
+  );
+}
+
+export function MarksAnswer({ value }: { value: number }) {
+  const safeValue = Math.max(1, Math.min(20, Math.floor(value)));
+  const fullGroups = Math.floor(safeValue / 5);
+  const remainder = safeValue % 5;
+
+  return (
+    <div className="pocetnik-marks-answer" aria-hidden="true">
+      {Array.from({ length: fullGroups }, (_, groupIndex) => (
+        <div key={`group-${groupIndex}`} className="pocetnik-marks-answer__group">
+          {Array.from({ length: 5 }, (_, markIndex) => (
+            <span key={markIndex} className="pocetnik-marks-answer__mark" />
+          ))}
+        </div>
+      ))}
+      {remainder > 0 ? (
+        <div className="pocetnik-marks-answer__group">
+          {Array.from({ length: remainder }, (_, markIndex) => (
+            <span key={markIndex} className="pocetnik-marks-answer__mark" />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

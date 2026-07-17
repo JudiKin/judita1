@@ -4,6 +4,9 @@ export const PRIMARY_BACKGROUNDS = {
   softGreen: '#E7F9EE',
   beige: '#F5E6D0',
   softOrange: '#FFF3E0',
+  softBlue: '#E8F4FD',
+  softPurple: '#F3EEFC',
+  softRose: '#FFF1F2',
 } as const;
 
 interface PrimaryShellProps {
@@ -95,3 +98,33 @@ const badgeStyle: React.CSSProperties = {
   fontSize: '1.6rem',
   fontWeight: 900,
 };
+
+export function PracticeLayout({ children }: { children: ReactNode }) {
+  return <div className="pocetnik-practice-layout">{children}</div>;
+}
+
+export function PracticeTitle({ children, color }: { children: ReactNode; color: string }) {
+  return (
+    <h2 className="pocetnik-practice-title" style={{ color }}>
+      {children}
+    </h2>
+  );
+}
+
+export function PracticeHint({
+  children,
+  tone = 'neutral',
+}: {
+  children: ReactNode;
+  tone?: 'success' | 'error' | 'neutral';
+}) {
+  return (
+    <div className="pocetnik-practice-hint-wrap">
+      <div className={`pocetnik-practice-hint pocetnik-practice-hint--${tone}`}>{children}</div>
+    </div>
+  );
+}
+
+export function PracticeOptions({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <div className={`pocetnik-practice-options ${className}`.trim()}>{children}</div>;
+}

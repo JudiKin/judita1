@@ -1,18 +1,38 @@
-import type { CountingObjectType, PocetnikSetup } from '../types/pocetnik-types';
-import { COUNTING_OBJECT_LABELS } from './primary-counting-model';
+import type { MoreLessObjectKind, PocetnikSetup, SequenceItemKind } from '../types/pocetnik-types';
+import { PAY_ITEM_LABELS } from './primary-pay-model';
+import { createRng, shuffleInPlace } from './practice-shuffle';
 
 export interface MoreLessExample {
   index: number;
   leftCount: number;
   rightCount: number;
   delta: number;
-  objectType: CountingObjectType;
+  objectKind: MoreLessObjectKind;
   stickerUrl?: string;
   options: number[];
 }
 
+const PATTERN_OBJECT_LABELS: Record<SequenceItemKind, string> = {
+  'yellow-cube': 'Žlutá kostka',
+  'green-cube': 'Zelená kostka',
+  'purple-cube': 'Fialová kostka',
+  'red-cube': 'Červená kostka',
+  'yellow-circle': 'Žluté kolečko',
+  'purple-square': 'Fialový čtverec',
+  'red-plus': 'Červené plus',
+};
+
+export const MORE_LESS_OBJECT_LABELS: Record<MoreLessObjectKind, string> = {
+  coconuts: 'Kokosy',
+  cubes: 'Kostky',
+  stickers: 'Nálepky',
+  ...PATTERN_OBJECT_LABELS,
+  ...PAY_ITEM_LABELS,
+};
+
 const STICKER_URLS = [
   'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/4_geometricke%20symboly/Samolepky_1_1_circle.svg',
+  'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/4_geometricke%20symboly/Samolepky_2_1_cross.svg',
   'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/5_barevne%20symboly/Samolepky_3_1_apple.svg',
   'https://qypiuvqglsmxdsnyazih.supabase.co/storage/v1/object/public/competition_files/stickers/7_dalsi%20symboly/Samolepky_1_1_coconut.svg',
 ];
@@ -44,25 +64,42 @@ function buildDeltaOptions(correct: number, maxDelta: number): number[] {
   return options;
 }
 
-export function buildMoreLessExample(setup: PocetnikSetup, index: number): MoreLessExample {
+export function buildMoreLessSession(setup: PocetnikSetup, count: number, seed: number): MoreLessExample[] {
   const { min, max, maxDelta } = clampRange(setup);
-  const objectTypes = setup.primaryMoreLessObjectTypes.length > 0 ? setup.primaryMoreLessObjectTypes : ['coconuts'];
-  const objectType = objectTypes[index % objectTypes.length] as CountingObjectType;
+  const objectKinds = setup.primaryMoreLessObjectTypes.length > 0 ? setup.primaryMoreLessObjectTypes : ['coconuts'];
+  const deltas = Array.from({ length: maxDelta * 2 + 1 }, (_, index) => index - maxDelta);
+  const random = createRng(seed);
 
-  const leftCount = min + ((index * 2) % (max - min + 1));
-  const deltas = [-maxDelta, -1, 0, 1, maxDelta].filter((delta) => delta >= -maxDelta && delta <= maxDelta);
-  const delta = deltas[index % deltas.length] ?? 0;
-  const rightCount = Math.max(min, Math.min(max, leftCount + delta));
+  const leftCounts = Array.from({ length: count }, () => min + Math.floor(random() * (max - min + 1)));
+  const deltaChoices = Array.from({ length: count }, () => deltas[Math.floor(random() * deltas.length)]);
+  const objectKindsPicked = Array.from(
+    { length: count },
+    () => objectKinds[Math.floor(random() * objectKinds.length)] as MoreLessObjectKind,
+  );
+  const stickerIndices = Array.from({ length: count }, () => Math.floor(random() * STICKER_URLS.length));
 
-  return {
-    index,
-    leftCount,
-    rightCount,
-    delta: rightCount - leftCount,
-    objectType,
-    stickerUrl: objectType === 'stickers' ? STICKER_URLS[index % STICKER_URLS.length] : undefined,
-    options: buildDeltaOptions(rightCount - leftCount, maxDelta),
-  };
+  shuffleInPlace(leftCounts, random);
+  shuffleInPlace(deltaChoices, random);
+  shuffleInPlace(objectKindsPicked, random);
+  shuffleInPlace(stickerIndices, random);
+
+  return leftCounts.map((leftCount, index) => {
+    const objectKind = objectKindsPicked[index];
+    const rightCount = Math.max(min, Math.min(max, leftCount + deltaChoices[index]));
+    const delta = rightCount - leftCount;
+
+    return {
+      index,
+      leftCount,
+      rightCount,
+      delta,
+      objectKind,
+      stickerUrl: objectKind === 'stickers' ? STICKER_URLS[stickerIndices[index] % STICKER_URLS.length] : undefined,
+      options: buildDeltaOptions(delta, maxDelta),
+    };
+  });
 }
 
-export { COUNTING_OBJECT_LABELS as MORE_LESS_OBJECT_LABELS };
+export function buildMoreLessExample(setup: PocetnikSetup, index: number): MoreLessExample {
+  return buildMoreLessSession(setup, index + 1, 918273)[index];
+}
