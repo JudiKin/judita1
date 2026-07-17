@@ -135,6 +135,19 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   maxQuestions: 10,
 };
 
+export const PRIMARY_ENVIRONMENT_ORDER: PrimaryEnvironment[] = [
+  'patterns',
+  'counting',
+  'moreLess',
+  'pay',
+  'fill',
+  'findErrors',
+  'modelWrite',
+  'numberSequence',
+  'dominoWrite',
+  'sumSearch',
+];
+
 export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   patterns: 'Pokračuj ve vzoru',
   counting: 'Počítej',

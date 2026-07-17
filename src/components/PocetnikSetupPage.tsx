@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   DEFAULT_POCETNIK_SETUP,
   PRIMARY_ENVIRONMENT_LABELS,
+  PRIMARY_ENVIRONMENT_ORDER,
   PRIMARY_ENVIRONMENT_SHORT,
   type DominoWriteMode,
   type ModelWriteMode,
@@ -40,7 +41,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
         <p className="pocetnik-setup__subtitle">Vyber prostředí a nastav jeho gradaci.</p>
 
         <div className="pocetnik-setup__env-grid" role="tablist" aria-label="Prostředí">
-          {(Object.keys(PRIMARY_ENVIRONMENT_SHORT) as PrimaryEnvironment[]).map((environment) => (
+          {PRIMARY_ENVIRONMENT_ORDER.map((environment) => (
             <button
               key={environment}
               type="button"
