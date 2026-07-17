@@ -1,0 +1,65 @@
+export type SchoolStage = 'primary' | 'lower-secondary';
+
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess';
+
+export type SequencePatternKind = 'AB' | 'AAB' | 'AAAB' | 'ABC' | 'AABB' | 'ABAC';
+
+export type SequenceDifficulty = 'easy' | 'medium' | 'hard';
+
+export type SequenceItemKind = 'yellow-cube' | 'green-cube' | 'purple-cube' | 'red-cube' | 'yellow-circle' | 'purple-square' | 'red-plus';
+
+export type CountingAnswerMode = 'dots' | 'marks' | 'numbers';
+
+export type CountingObjectType = 'coconuts' | 'cubes' | 'stickers';
+
+export interface PocetnikSetup {
+  schoolStage: SchoolStage;
+  gradeLabel: string;
+  primaryEnvironment: PrimaryEnvironment;
+  primaryPatternDifficulty: SequenceDifficulty;
+  primaryPatternSymbolSet: 'blocks' | 'shapes';
+  primaryPatternObjects: SequenceItemKind[];
+  primaryPatternTypes: SequencePatternKind[];
+  primaryPatternRows: 1 | 2 | 3;
+  primaryCountingMin: number;
+  primaryCountingMax: number;
+  primaryCountingAnswerModes: CountingAnswerMode[];
+  primaryCountingObjectTypes: CountingObjectType[];
+  primaryMoreLessMin: number;
+  primaryMoreLessMax: number;
+  primaryMoreLessMaxDelta: number;
+  primaryMoreLessObjectTypes: CountingObjectType[];
+  maxQuestions: number;
+}
+
+export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
+  schoolStage: 'primary',
+  gradeLabel: '1. ročník',
+  primaryEnvironment: 'patterns',
+  primaryPatternDifficulty: 'easy',
+  primaryPatternSymbolSet: 'blocks',
+  primaryPatternObjects: ['yellow-cube', 'green-cube', 'purple-cube', 'yellow-circle', 'purple-square', 'red-plus'],
+  primaryPatternTypes: ['AB', 'AAB', 'AAAB'],
+  primaryPatternRows: 1,
+  primaryCountingMin: 1,
+  primaryCountingMax: 6,
+  primaryCountingAnswerModes: ['dots'],
+  primaryCountingObjectTypes: ['coconuts', 'cubes', 'stickers'],
+  primaryMoreLessMin: 1,
+  primaryMoreLessMax: 6,
+  primaryMoreLessMaxDelta: 2,
+  primaryMoreLessObjectTypes: ['coconuts', 'cubes'],
+  maxQuestions: 10,
+};
+
+export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
+  patterns: 'Pokračuj ve vzoru',
+  counting: 'Počítej',
+  moreLess: 'Porovnej počet',
+};
+
+export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
+  patterns: 'Pokračuj',
+  counting: 'Počítej',
+  moreLess: 'Porovnej počet',
+};

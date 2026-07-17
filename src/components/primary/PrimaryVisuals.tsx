@@ -1,0 +1,138 @@
+import type { PatternSymbol } from '../../lib/primary-pattern-model';
+
+const COLORS: Record<string, { top: string; left: string; right: string }> = {
+  'yellow-cube': { top: '#ffd54f', left: '#ffb300', right: '#ff8f00' },
+  'green-cube': { top: '#81c784', left: '#43a047', right: '#2e7d32' },
+  'purple-cube': { top: '#ba68c8', left: '#8e24aa', right: '#6a1b9a' },
+  'red-cube': { top: '#ef5350', left: '#e53935', right: '#c62828' },
+};
+
+export function PatternSymbolView({ symbol, ghost = false }: { symbol: PatternSymbol; ghost?: boolean }) {
+  if (symbol.id.includes('cube')) {
+    const colors = COLORS[symbol.id] ?? COLORS['yellow-cube'];
+    return (
+      <svg viewBox="0 0 96 82" width={80} height={70} aria-hidden="true" style={{ opacity: ghost ? 0.35 : 1 }}>
+        <path d="M20 18h54l16 18H36z" fill={colors.top} />
+        <path d="M36 36h54v42H36z" fill={colors.left} />
+        <path d="M20 18l16 18v42L20 60z" fill={colors.right} />
+        <path d="M36 36h54" stroke="#3cae8c" strokeWidth="2" />
+        <path d="M63 36v42" stroke="#3cae8c" strokeWidth="2" />
+      </svg>
+    );
+  }
+
+  const shapeStyles: Record<string, React.CSSProperties> = {
+    'yellow-circle': { background: '#ffd54f', borderRadius: '999px' },
+    'purple-square': { background: '#ba68c8', borderRadius: 12 },
+    'red-plus': { background: '#ef5350', borderRadius: 12, position: 'relative' },
+  };
+
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        width: 72,
+        height: 72,
+        opacity: ghost ? 0.35 : 1,
+        ...shapeStyles[symbol.id],
+      }}
+    >
+      {symbol.id === 'red-plus' ? (
+        <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: '#fff', fontSize: 42, fontWeight: 900 }}>+</span>
+      ) : null}
+    </div>
+  );
+}
+
+export function CoconutObject({ index }: { index: number }) {
+  return (
+    <div style={{ position: 'relative', width: 80, height: 80, transform: `rotate(${index % 2 === 0 ? -12 : 14}deg)` }} aria-hidden="true">
+      <div style={{ position: 'absolute', inset: 4, borderRadius: 999, background: '#8d2f1f', boxShadow: '0 8px 16px rgb(0 0 0 / 0.15)' }} />
+      <div style={{ position: 'absolute', left: 16, top: 16, width: 48, height: 48, borderRadius: 999, background: '#ead8b6' }} />
+    </div>
+  );
+}
+
+export function CubeObject({ index }: { index: number }) {
+  const offset = index % 3;
+  return (
+    <svg viewBox="0 0 96 82" width={80} height={70} aria-hidden="true" style={{ transform: `translateY(${offset * 4}px)` }}>
+      <path d="M20 18h54l16 18H36z" fill="#72f0c6" />
+      <path d="M36 36h54v42H36z" fill="#60bf9e" />
+      <path d="M20 18l16 18v42L20 60z" fill="#079666" />
+    </svg>
+  );
+}
+
+export function StickerObject({ url, index }: { url: string; index: number }) {
+  return (
+    <div style={{ width: 80, height: 80, display: 'grid', placeItems: 'center', transform: `rotate(${index % 2 === 0 ? -8 : 9}deg)` }}>
+      <img src={url} alt="" draggable={false} style={{ maxWidth: 80, maxHeight: 80, objectFit: 'contain' }} />
+    </div>
+  );
+}
+
+export function ObjectGroup({
+  count,
+  objectType,
+  stickerUrl,
+}: {
+  count: number;
+  objectType: 'coconuts' | 'cubes' | 'stickers';
+  stickerUrl?: string;
+}) {
+  return (
+    <div className="pocetnik-object-group" aria-label={`Skupina ${count} objektů`}>
+      {Array.from({ length: count }, (_, index) => {
+        if (objectType === 'stickers' && stickerUrl) return <StickerObject key={index} url={stickerUrl} index={index} />;
+        if (objectType === 'cubes') return <CubeObject key={index} index={index} />;
+        return <CoconutObject key={index} index={index} />;
+      })}
+    </div>
+  );
+}
+
+export function DotsAnswer({ value }: { value: number }) {
+  const positions: Record<number, string[]> = {
+    1: ['center'],
+    2: ['top-left', 'bottom-right'],
+    3: ['top-left', 'center', 'bottom-right'],
+    4: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+    5: ['top-left', 'top-right', 'center', 'bottom-left', 'bottom-right'],
+    6: ['top-left', 'top-right', 'middle-left', 'middle-right', 'bottom-left', 'bottom-right'],
+  };
+  const coords: Record<string, string> = {
+    'top-left': 'left: 18%; top: 18%;',
+    'top-right': 'right: 18%; top: 18%;',
+    'middle-left': 'left: 18%; top: 50%; transform: translateY(-50%);',
+    'middle-right': 'right: 18%; top: 50%; transform: translateY(-50%);',
+    center: 'left: 50%; top: 50%; transform: translate(-50%, -50%);',
+    'bottom-left': 'left: 18%; bottom: 18%;',
+    'bottom-right': 'right: 18%; bottom: 18%;',
+  };
+
+  return (
+    <div style={{ position: 'relative', width: 96, height: 96, borderRadius: 24, background: '#6c48f5', boxShadow: 'inset 0 0 0 1px rgb(255 255 255 / 0.15)' }}>
+      {(positions[value] ?? positions[6]).map((key) => (
+        <span
+          key={key}
+          style={{
+            position: 'absolute',
+            width: 20,
+            height: 20,
+            borderRadius: 999,
+            background: '#fff',
+            ...(Object.fromEntries(coords[key].split(';').filter(Boolean).map((part) => {
+              const [k, v] = part.split(':').map((piece) => piece.trim());
+              return [k.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase()), v];
+            })) as React.CSSProperties),
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function NumberAnswer({ value }: { value: number }) {
+  return <span style={{ fontSize: '4rem', fontWeight: 900, color: '#6c48f5' }}>{value}</span>;
+}
