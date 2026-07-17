@@ -42,10 +42,8 @@ export function PatternPractice({ setup, onBack }: PatternPracticeProps) {
       {feedback !== null ? <FeedbackOverlay correct={feedback} /> : null}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 32px' }}>
         <PracticeHeader questionNumber={index + 1} onBack={onBack} onNext={handleNext} canNext={completed} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#065f46', textTransform: 'uppercase' }}>
-          <span aria-hidden="true">✋</span>
-          <span aria-hidden="true">✎</span>
-          <span>Postav a pokračuj</span>
+        <div style={{ marginBottom: 20, fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, color: '#065f46', textTransform: 'uppercase' }}>
+          Postav a pokračuj
         </div>
         <PrimaryCard style={{ padding: '24px 28px' } as React.CSSProperties}>
           <div style={{ display: 'grid', gap: 20 }}>
