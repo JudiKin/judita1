@@ -3,6 +3,7 @@ import {
   DEFAULT_POCETNIK_SETUP,
   PRIMARY_ENVIRONMENT_LABELS,
   PRIMARY_ENVIRONMENT_SHORT,
+  type ModelWriteMode,
   type PocetnikSetup,
   type PrimaryEnvironment,
 } from '../types/pocetnik-types';
@@ -53,7 +54,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                     ? 'Podívej se na cenovku a vyber mince, aby sis mohl předmět koupit.'
                     : setup.primaryEnvironment === 'findErrors'
                       ? 'Podívej se na příklad a urči, jestli je správně, nebo obsahuje chybu.'
-                      : 'Doplň kuličky do pytlíku na zvolený počet.'}
+                      : setup.primaryEnvironment === 'modelWrite'
+                        ? 'Modeluj sčítání nebo odčítání s tečkami a zapisuj rozdělení přes desítku.'
+                        : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -254,6 +257,41 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 value={setup.primaryFindErrorsMax}
                 onChange={(event) => setSetup((current) => ({ ...current, primaryFindErrorsMax: Number(event.target.value) }))}
               />
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'modelWrite' ? (
+          <div className="pocetnik-setup__mode-list">
+            <label className={`pocetnik-setup__mode-option ${setup.primaryModelWriteModes.includes('add') ? 'is-active' : ''}`}>
+              <input
+                type="checkbox"
+                checked={setup.primaryModelWriteModes.includes('add')}
+                onChange={(event) => {
+                  setSetup((current) => {
+                    const next = event.target.checked
+                      ? [...new Set([...current.primaryModelWriteModes, 'add' as ModelWriteMode])]
+                      : current.primaryModelWriteModes.filter((mode) => mode !== 'add');
+                    return { ...current, primaryModelWriteModes: next.length > 0 ? next : ['add'] };
+                  });
+                }}
+              />
+              Sčítej s tečkami
+            </label>
+            <label className={`pocetnik-setup__mode-option ${setup.primaryModelWriteModes.includes('subtract') ? 'is-active' : ''}`}>
+              <input
+                type="checkbox"
+                checked={setup.primaryModelWriteModes.includes('subtract')}
+                onChange={(event) => {
+                  setSetup((current) => {
+                    const next = event.target.checked
+                      ? [...new Set([...current.primaryModelWriteModes, 'subtract' as ModelWriteMode])]
+                      : current.primaryModelWriteModes.filter((mode) => mode !== 'subtract');
+                    return { ...current, primaryModelWriteModes: next.length > 0 ? next : ['subtract'] };
+                  });
+                }}
+              />
+              Odčítej s tečkami
             </label>
           </div>
         ) : null}
