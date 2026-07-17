@@ -1,6 +1,6 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite' | 'numberSequence' | 'dominoWrite';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite' | 'numberSequence' | 'dominoWrite' | 'sumSearch';
 
 export type DominoWriteMode = 'add' | 'subtract';
 
@@ -61,6 +61,8 @@ export interface PocetnikSetup {
   primaryNumberSequenceMax: number;
   primaryDominoWriteModes: DominoWriteMode[];
   primaryDominoMaxDots: 6 | 9;
+  primarySumSearchTargets: number[];
+  primarySumSearchGridSize: 3 | 4 | 5;
   maxQuestions: number;
 }
 
@@ -128,6 +130,8 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryNumberSequenceMax: 20,
   primaryDominoWriteModes: ['add', 'subtract'],
   primaryDominoMaxDots: 9,
+  primarySumSearchTargets: [5, 6, 7, 8, 9, 10],
+  primarySumSearchGridSize: 4,
   maxQuestions: 10,
 };
 
@@ -141,6 +145,7 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   modelWrite: 'Modeluj, zapisuj',
   numberSequence: 'Číselné řady',
   dominoWrite: 'Zapiš a sečti',
+  sumSearch: 'Křížovka – najdi součet',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
@@ -153,4 +158,5 @@ export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   modelWrite: 'Modeluj',
   numberSequence: 'Řady',
   dominoWrite: 'Domino',
+  sumSearch: 'Součet',
 };

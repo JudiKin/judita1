@@ -19,6 +19,7 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
   const modelWriteModes = setup.primaryModelWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryModelWriteModes;
   const numberSequenceSteps = setup.primaryNumberSequenceSteps ?? DEFAULT_POCETNIK_SETUP.primaryNumberSequenceSteps;
   const dominoWriteModes = setup.primaryDominoWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryDominoWriteModes;
+  const sumSearchTargets = setup.primarySumSearchTargets ?? DEFAULT_POCETNIK_SETUP.primarySumSearchTargets;
 
   const updateEnvironment = (primaryEnvironment: PrimaryEnvironment) => {
     setSetup((current) => ({
@@ -26,6 +27,8 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
       ...current,
       primaryEnvironment,
       primaryModelWriteModes: current.primaryModelWriteModes ?? DEFAULT_POCETNIK_SETUP.primaryModelWriteModes,
+      primarySumSearchTargets: current.primarySumSearchTargets ?? DEFAULT_POCETNIK_SETUP.primarySumSearchTargets,
+      primarySumSearchGridSize: current.primarySumSearchGridSize ?? DEFAULT_POCETNIK_SETUP.primarySumSearchGridSize,
     }));
   };
 
@@ -70,7 +73,9 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                           ? 'Doplň chybějící číslo v číselné řadě, např. 0, 2, 4, ?, 8, 10.'
                           : setup.primaryEnvironment === 'dominoWrite'
                             ? 'Spočítej tečky na domino, zapiš sčítání nebo odčítání a výsledek.'
-                            : 'Doplň kuličky do pytlíku na zvolený počet.'}
+                            : setup.primaryEnvironment === 'sumSearch'
+                              ? 'Najdi sousední čísla v řadě nebo sloupci, která dohromady dají zadaný součet.'
+                              : 'Doplň kuličky do pytlíku na zvolený počet.'}
           </p>
         </div>
 
@@ -365,6 +370,53 @@ export function PocetnikSetupPage({ onStart }: PocetnikSetupPageProps) {
                 <option value={20}>20</option>
                 <option value={50}>50</option>
                 <option value={100}>100</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
+
+        {setup.primaryEnvironment === 'sumSearch' ? (
+          <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <div className="pocetnik-setup__mode-list" style={{ gridColumn: '1 / -1' }}>
+              {[5, 6, 7, 8, 9, 10].map((target) => (
+                <label
+                  key={target}
+                  className={`pocetnik-setup__mode-option ${sumSearchTargets.includes(target) ? 'is-active' : ''}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={sumSearchTargets.includes(target)}
+                    onChange={(event) => {
+                      setSetup((current) => {
+                        const currentTargets = current.primarySumSearchTargets ?? DEFAULT_POCETNIK_SETUP.primarySumSearchTargets;
+                        const next = event.target.checked
+                          ? [...new Set([...currentTargets, target])]
+                          : currentTargets.filter((value) => value !== target);
+                        return {
+                          ...current,
+                          primarySumSearchTargets: next.length > 0 ? next : [target],
+                        };
+                      });
+                    }}
+                  />
+                  Součet {target}
+                </label>
+              ))}
+            </div>
+            <label className="pocetnik-setup__field">
+              Velikost mřížky
+              <select
+                value={setup.primarySumSearchGridSize ?? DEFAULT_POCETNIK_SETUP.primarySumSearchGridSize}
+                onChange={(event) =>
+                  setSetup((current) => ({
+                    ...current,
+                    primarySumSearchGridSize: Number(event.target.value) as PocetnikSetup['primarySumSearchGridSize'],
+                  }))
+                }
+              >
+                <option value={3}>3 × 3</option>
+                <option value={4}>4 × 4</option>
+                <option value={5}>5 × 5</option>
               </select>
             </label>
           </div>
