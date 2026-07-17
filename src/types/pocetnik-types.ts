@@ -1,6 +1,8 @@
 export type SchoolStage = 'primary' | 'lower-secondary';
 
-export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors';
+export type PrimaryEnvironment = 'patterns' | 'counting' | 'moreLess' | 'pay' | 'fill' | 'findErrors' | 'modelWrite';
+
+export type ModelWriteMode = 'add' | 'subtract';
 
 export type FillMarbleColor = 'red' | 'orange';
 
@@ -49,6 +51,7 @@ export interface PocetnikSetup {
   primaryFindErrorsMax: number;
   primaryFindErrorsKinds: FindErrorKind[];
   primaryFindErrorsObjectTypes: MoreLessObjectKind[];
+  primaryModelWriteModes: ModelWriteMode[];
   maxQuestions: number;
 }
 
@@ -110,6 +113,7 @@ export const DEFAULT_POCETNIK_SETUP: PocetnikSetup = {
   primaryFindErrorsMax: 6,
   primaryFindErrorsKinds: ['counting', 'comparison', 'pattern'],
   primaryFindErrorsObjectTypes: ['coconuts', 'cubes', 'yellow-cube', 'green-cube', 'apple', 'ball'],
+  primaryModelWriteModes: ['add', 'subtract'],
   maxQuestions: 10,
 };
 
@@ -120,6 +124,7 @@ export const PRIMARY_ENVIRONMENT_LABELS: Record<PrimaryEnvironment, string> = {
   pay: 'Zaplať',
   fill: 'Doplň',
   findErrors: 'Najdi chyby',
+  modelWrite: 'Modeluj, zapisuj',
 };
 
 export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
@@ -129,4 +134,5 @@ export const PRIMARY_ENVIRONMENT_SHORT: Record<PrimaryEnvironment, string> = {
   pay: 'Zaplať',
   fill: 'Doplň',
   findErrors: 'Najdi chyby',
+  modelWrite: 'Modeluj',
 };

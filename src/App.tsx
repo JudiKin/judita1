@@ -7,6 +7,7 @@ import { MoreLessPractice } from './components/MoreLessPractice';
 import { PayPractice } from './components/PayPractice';
 import { FillPractice } from './components/FillPractice';
 import { FindErrorsPractice } from './components/FindErrorsPractice';
+import { ModelWritePractice } from './components/ModelWritePractice';
 
 type Screen = 'setup' | 'practice';
 
@@ -29,6 +30,9 @@ export default function App() {
     }
     if (setup.primaryEnvironment === 'findErrors') {
       return <FindErrorsPractice setup={setup} onBack={() => setScreen('setup')} />;
+    }
+    if (setup.primaryEnvironment === 'modelWrite') {
+      return <ModelWritePractice setup={setup} onBack={() => setScreen('setup')} />;
     }
     return <PatternPractice setup={setup} onBack={() => setScreen('setup')} />;
   }
